@@ -1,0 +1,56 @@
+%YAML:1.0
+calibration_time: "Wed 13 Oct 2021 11:40:15 AM EEST"
+image_width: 640
+image_height: 480
+camera_name: creative
+flags: 0
+
+#     ┌─                   ─┐ 
+#     |   fx    skew    cx  |
+# K = |   0      fy     cy  |
+#     |   0       0      1  |
+#     └─                   ─┘
+# Matlab data: 
+#   cameraParams.IntrinsicMatrix: [6.071081558614247e+02,0,0;0.478082361178564,6.072418988659794e+02,0;3.371317938737815e+02,2.502060774823127e+02,1]
+#   cameraParams.FocalLength:     [6.071081558614247e+02,6.072418988659794e+02]
+#   cameraParams.PrincipalPoint:  [3.371317938737815e+02,2.502060774823127e+02]
+#   cameraParams.Skew:                    0.478082361178564         
+#   cameraParams.MeanReprojectionError:   0.124755933189555
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [   6.071081558614247e+02   ,   0.478082361178564     , 3.371317938737815e+02 , 
+                    0.0             ,   6.072418988659794e+02 , 2.502060774823127e+02 , 
+                    0.0             ,           0.0           ,         1.0           ]
+distortion_model: plumb_bob
+
+# Radial      = [k1, k2, k3]
+# Tangential  = [t1, t2]
+# Distortion  = [k1, k2, t1, t2, k3]
+# Matlab data (Do not forget to choose 3 parameters): 
+#   cameraParams.RadialDistortion:      [-0.042463889734281,0.165243988203313,-0.226795513113331]
+#   cameraParams.TangentialDistortion:  [-1.469393232733728e-04,-5.764911521050082e-04]
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [-0.042463889734281, 0.165243988203313, -1.469393232733728e-04, -5.764911521050082e-04, -0.226795513113331]
+
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1.000000, 0.000000, 0.000000, 
+        0.000000, 1.000000, 0.000000, 
+        0.000000, 0.000000, 1.000000]
+
+#   For mono use only Pl, for stereo use for left image Pl and for right Pr
+#      ┌─                          ─┐                 ┌─                             ─┐
+#      |   fx      0     cx     0   |                 |   fx      0     cx     Tx*f   |
+# Pl = |   0      fy     cy     0   |            Pr = |   0      fy     cy     0      |
+#      |   0       0      1     0   |                 |   0       0      1     0      |
+#      └─                          ─┘                 └─                             ─┘
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [ 6.071081558614247e+02   ,         0.0               ,    3.371317938737815e+02    ,   0.0 , 
+                0.0               ,   6.072418988659794e+02   ,    2.502060774823127e+02    ,   0.0 ,
+                0.0               ,         0.0               ,           1.0               ,   0.0 ]
