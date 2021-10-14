@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(ros-drone-swarm-mocap)
+project(ros_drone_swarm_mocap)
 
 add_compile_options(
   -Wall
@@ -67,16 +67,17 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
+  mocap_client_data.msg
 #   Message1.msg
 #   Message2.msg
 )
 
 ## Generate services in the 'srv' folder
-add_service_files(
-  FILES
+# add_service_files(
+  # FILES
 #   Service1.srv
 #   Service2.srv
-)
+# )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -229,14 +230,14 @@ include
 #                                  Create a new executable node
 # ---------------------------------------------------------------------------------------------
 # TODO: replace content here
-# set(Node_name sub)
-# set(
-#   Node_sources
-#   src/pub-sub/sub.cpp
-# )
+set(Node_name client)
+set(
+  Node_sources
+  src/client/main.cpp
+)
 
-# # Let them as is
-# add_executable( ${Node_name}_node  ${Node_sources})
-# add_dependencies(${Node_name}_node ${${Node_name}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-# target_link_libraries(${Node_name}_node  ${catkin_LIBRARIES})
+# Let them as is
+add_executable( ${Node_name}_node  ${Node_sources})
+add_dependencies(${Node_name}_node ${${Node_name}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(${Node_name}_node  ${catkin_LIBRARIES})
 # ____________________________________________________________________________________________

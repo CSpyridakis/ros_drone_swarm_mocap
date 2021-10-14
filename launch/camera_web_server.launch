@@ -1,4 +1,4 @@
 <launch>
-    <include file="$(find ros_example)/launch/camera_to_usb_cam.launch"/> 
+    <include file="$(find ros_drone_swarm_mocap)/launch/camera_to_usb_cam.launch"/> 
     <node name="web_video_server" pkg="web_video_server" type="web_video_server" output="screen" />
 </launch>

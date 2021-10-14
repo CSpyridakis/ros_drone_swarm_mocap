@@ -1,0 +1,6 @@
+<launch>
+    <!-- Read parameters -->
+    <rosparam command="load" file="$(find ros_drone_swarm_mocap)/config/params.yaml"/>
+
+    
+</launch>

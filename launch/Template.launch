@@ -1,8 +1,0 @@
-<launch>
-<node name="remapped_name" pkg="package_located" type="executable_name"  args="args"/>
-
-<node name="remapped_name" pkg="package_located" type="executable_name" output="screen" >
-	<param name="param_name" value="param_value" />
-</node>
-
-</launch>

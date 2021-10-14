@@ -1,0 +1,16 @@
+<launch>
+    <!-- Read parameters -->
+    <rosparam command="load" file="$(find ros_drone_swarm_mocap)/config/params.yaml"/>
+
+    <!-- Camera node -->
+    <include file="$(find ros_drone_swarm_mocap)/launch/camera_to_usb_cam.launch"/> 
+    <!--    View camera to webpage     http://{NODE's IP}:8080     -->
+    <node name="web_video_server_1" pkg="web_video_server" type="web_video_server" output="screen" />
+
+    <!-- TODO: maybe change this node's name -->
+    <node name="client_node_1" pkg="ros_drone_swarm_mocap" type="client_node" output="screen" />
+    <!-- IMU -->
+    <!-- <node name="web_video_server" pkg="web_video_server" type="web_video_server" output="screen" /> -->
+    <!-- GPS -->
+    <!-- <node name="web_video_server" pkg="web_video_server" type="web_video_server" output="screen" /> -->
+</launch>

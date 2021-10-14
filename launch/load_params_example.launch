@@ -1,4 +1,0 @@
-<launch>
-    <rosparam command="load" file="$(find ros_example)/config/params.yaml"/>
-    <node name="param_example_server" pkg="ros_example" type="params_example_node"  args="args" output="screen"/>
-</launch>

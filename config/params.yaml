@@ -1,3 +1,2 @@
-paramFileText: "Just some text"
-paramFileTextTopic: "/this/params/test"
-paramFileNum: 1
+nodeID: 1
+nodeType: "mocap client"
