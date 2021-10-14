@@ -67,7 +67,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  mocap_client_data.msg
+  mocap_worker_data.msg
 #   Message1.msg
 #   Message2.msg
 )
@@ -225,19 +225,21 @@ include
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
+include_directories(include/${PROJECT_NAME})
 
 # ---------------------------------------------------------------------------------------------
 #                                  Create a new executable node
 # ---------------------------------------------------------------------------------------------
 # TODO: replace content here
-set(Node_name client)
+set(Node_name worker)
 set(
   Node_sources
-  src/client/main.cpp
+  src/worker/main.cpp
+  src/worker/ballDetection.cpp
 )
 
 # Let them as is
 add_executable( ${Node_name}_node  ${Node_sources})
 add_dependencies(${Node_name}_node ${${Node_name}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(${Node_name}_node  ${catkin_LIBRARIES})
+target_link_libraries(${Node_name}_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 # ____________________________________________________________________________________________

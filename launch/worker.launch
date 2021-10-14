@@ -8,7 +8,7 @@
     <node name="web_video_server_1" pkg="web_video_server" type="web_video_server" output="screen" />
 
     <!-- TODO: maybe change this node's name -->
-    <node name="client_node_1" pkg="ros_drone_swarm_mocap" type="client_node" output="screen" />
+    <node name="worker_node_1" pkg="ros_drone_swarm_mocap" type="worker_node" output="screen" />
     <!-- IMU -->
     <!-- <node name="web_video_server" pkg="web_video_server" type="web_video_server" output="screen" /> -->
     <!-- GPS -->
