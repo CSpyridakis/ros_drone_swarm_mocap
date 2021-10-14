@@ -11,7 +11,7 @@ add_compile_options(
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
 
-find_package(OpenCV 4.5 REQUIRED)
+find_package(OpenCV 4.2 REQUIRED)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)

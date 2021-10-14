@@ -70,19 +70,24 @@ void calculateDistance(std::vector<cv::Vec3f> circles, ros_drone_swarm_mocap::mo
 
 void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap_worker_data& procData){
     cv::Mat imgTmp = img.clone();
-    cv::Mat imgShape = img.clone();
-    cv::Mat imgColor = img.clone();
-    
     std::vector<cv::Vec3f> circles;
 
-    // shapeDetection(imgShape, circles);
+#if defined(SHAPE_DETEC)
+    cv::Mat imgShape = img.clone();
+    shapeDetection(imgShape, circles);
+    imgTmp = imgShape.clone();
+#elif defined(COLOR_DETEC)
+    cv::Mat imgColor = img.clone();
     colorDetection(imgColor, circles);
+    imgTmp = imgColor.clone();
+#endif
 
 #ifdef DEBUG
     cameraPrintInfo(imgTmp, procData);
     drawCircles(imgTmp, imgTmp, circles);
 #endif
-    imgOut = imgColor.clone();
+
+    imgOut = imgTmp.clone();
     calculateDistance(circles, procData);
 }
 
