@@ -24,7 +24,7 @@ void CallbackFunction(const sensor_msgs::Image::ConstPtr& inImage){
     procData.nodeID = nodeID;
 
     cv::Mat feedOut;
-    cv::Mat feedIn = cv_bridge::toCvShare(inImage)->image;
+    cv::Mat feedIn = cv_bridge::toCvCopy(inImage)->image;
     if (feedIn.empty()) return;
     
     detectBall(feedIn, feedOut, procData);

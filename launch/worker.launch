@@ -1,16 +1,29 @@
 <launch>
+    <!-- TODO: May need to change this argument  -->
+    <arg name="nodeID" default="1" />
+
     <!-- Read parameters -->
     <rosparam command="load" file="$(find ros_drone_swarm_mocap)/config/params.yaml"/>
 
     <!-- Camera node -->
     <include file="$(find ros_drone_swarm_mocap)/launch/camera_to_usb_cam.launch"/> 
     <!--    View camera to webpage     http://{NODE's IP}:8080     -->
-    <node name="web_video_server_1" pkg="web_video_server" type="web_video_server" output="screen" />
+    <node name="web_video_server_$(arg nodeID)" pkg="web_video_server" type="web_video_server" output="screen" />
 
-    <!-- TODO: maybe change this node's name -->
-    <node name="worker_node_1" pkg="ros_drone_swarm_mocap" type="worker_node" output="screen" />
+    <!-- Ball Detection -->
+    <node name="worker_node_$(arg nodeID)" pkg="ros_drone_swarm_mocap" type="worker_node" output="screen" />
+
     <!-- IMU -->
-    <!-- <node name="web_video_server" pkg="web_video_server" type="web_video_server" output="screen" /> -->
+    <node name="imu_$(arg nodeID)" pkg="adafruit_10dof_imu" type="imuout" output="screen"/>
+    <remap from="/chatter" to="/chatter_$(arg nodeID)"/>
+
     <!-- GPS -->
-    <!-- <node name="web_video_server" pkg="web_video_server" type="web_video_server" output="screen" /> -->
+    <node name="nmea_serial_driver_$(arg nodeID)" pkg="nmea_navsat_driver" type="nmea_serial_driver" output="screen">
+        <param name="port" value="/dev/ttyS0" />
+        <param name="baud" value="9600" />
+    </node>
+    <remap from="/fix" to="/fix_$(arg nodeID)"/>
+    <remap from="/heading" to="/heading_$(arg nodeID)"/>
+    <remap from="/time_reference" to="/time_reference_$(arg nodeID)"/>
+    <remap from="/vel" to="/vel_$(arg nodeID)"/>
 </launch>
