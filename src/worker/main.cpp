@@ -17,19 +17,24 @@ int nodeID = 0;
 
 image_transport::Publisher processedImage;
 ros::Publisher processedData;
+ros_drone_swarm_mocap::mocap_worker_data procData;
 
 void CallbackFunction(const sensor_msgs::Image::ConstPtr& inImage){
-    sensor_msgs::ImagePtr procImage;
-    ros_drone_swarm_mocap::mocap_worker_data procData;
-    procData.nodeID = nodeID;
-
     cv::Mat feedOut;
-    cv::Mat feedIn = cv_bridge::toCvCopy(inImage)->image;
+    cv::Mat feedIn;
+    try{
+        feedIn = cv_bridge::toCvCopy(inImage, sensor_msgs::image_encodings::BGR8)->image;
+    }
+    catch(cv_bridge::Exception& e){
+        ROS_ERROR("CV_BRIDGE COPY EXPEPTION");
+        // ROS_ERROR(e.what());
+        return;
+    }
     if (feedIn.empty()) return;
     
     detectBall(feedIn, feedOut, procData);
 
-    procImage = cv_bridge::CvImage(std_msgs::Header(), "rgb8", feedOut).toImageMsg();
+    sensor_msgs::ImagePtr procImage = cv_bridge::CvImage(std_msgs::Header(), "bgr8", feedOut).toImageMsg();
     processedImage.publish(procImage);
     processedData.publish(procData);
 }
@@ -45,6 +50,8 @@ int main(int argc, char **argv){
     catch(int e){
         ROS_WARN("Parameters load failed");
     }
+    procData.nodeID = nodeID;
+    procData.
 
     std::string subImageTopic = "/usb_cam_" + std::to_string(nodeID) + "/image_raw";
     std::string pubImageTopic = "/usb_cam_" + std::to_string(nodeID) + "/processed_image";

@@ -1,6 +1,6 @@
 <launch>
     <!-- TODO: May need to change this argument  -->
-    <arg name="nodeID" default="1" />
+    <arg name="nodeID" value="1" />
 
     <!-- Read parameters -->
     <rosparam command="load" file="$(find ros_drone_swarm_mocap)/config/params.yaml"/>

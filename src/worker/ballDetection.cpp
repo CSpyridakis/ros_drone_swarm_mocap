@@ -3,8 +3,13 @@
 
 #include "worker/ballDetection.hpp"
 
-void cameraPrintInfo(cv::Mat &img, const ros_drone_swarm_mocap::mocap_worker_data& procData){
+#include "ros_drone_swarm_mocap/mocap_worker_data.h"
+#include "ros_drone_swarm_mocap/detected_ball_data.h"
+
+void cameraPrintInfo(cv::Mat &img, const ros_drone_swarm_mocap::mocap_worker_data& procData, std::vector<cv::Vec3f>& circles){
     cv::Scalar greenColor(0, 255, 0);
+    cv::Scalar redColor(0, 0, 255);
+    cv::Scalar blueColor(255, 0, 0);
     cv::Point middleUp(int(img.cols/2), 0);
     cv::Point middleDown(int(img.cols/2), img.rows);
     cv::Point middleLeft(0, int(img.rows/2));
@@ -24,9 +29,10 @@ void cameraPrintInfo(cv::Mat &img, const ros_drone_swarm_mocap::mocap_worker_dat
     cv::putText(img, resTxt, cv::Point(50, 85), cv::FONT_HERSHEY_DUPLEX, 1, greenColor, 1);
 }
 
-void drawCircles(cv::Mat img, cv::Mat& outimg, std::vector<cv::Vec3f>& circles){
+void drawCircles(cv::Mat img, cv::Mat& outimg, const ros_drone_swarm_mocap::mocap_worker_data procData, std::vector<cv::Vec3f>& circles){
     outimg = img.clone();
-    
+    std::string resTxt;
+
     for( uint k = 0; k < circles.size(); k++ ){
         cv::Scalar blueColor(255, 0, 0);
         cv::Scalar redColor(0, 0, 255);
@@ -37,6 +43,9 @@ void drawCircles(cv::Mat img, cv::Mat& outimg, std::vector<cv::Vec3f>& circles){
         cv::circle(outimg, center, 1, redColor, 2, cv::LINE_AA);
         // circle outline
         cv::circle(outimg, center, c[2], blueColor, 2, cv::LINE_AA);
+        
+        resTxt = "(" + std::to_string(c[0]) + "," + std::to_string(c[1]) + ") - " + std::to_string(c[2]) + " - [" + std::to_string(procData.balls[k].distance_from_camera) + "]";
+        cv::putText(outimg, resTxt, cv::Point(c[0]-c[2], c[1]-c[2]), cv::FONT_HERSHEY_DUPLEX, 1, redColor, 1);
     }
 }
 
@@ -51,7 +60,7 @@ void shapeDetection(cv::Mat& img, std::vector<cv::Vec3f>& circles){
                         2,                  // Accumulator resolution 
                         img.cols,           // Min distance between circles
                         100,                // Canny high threshold
-                        100,                // Threshold for center detection
+                        120,                // Threshold for center detection
                         0, 200);            // Min and max radius
 }
 
@@ -62,33 +71,38 @@ void colorDetection(cv::Mat& img, std::vector<cv::Vec3f>& circles){
 }
 
 void calculateDistance(std::vector<cv::Vec3f> circles, ros_drone_swarm_mocap::mocap_worker_data& procData){
-
+    ros_drone_swarm_mocap::detected_ball_data bd;
+    for( uint k = 0; k < circles.size(); k++ ){
+        bd.image_plane_x = circles[k][0];
+        bd.image_plane_y = circles[k][1];
+        bd.image_plane_r = circles[k][2];
+        bd.distance_from_camera = 0;
+        // TODO: Calculate distance
+    }
+    procData.balls.push_back(bd);
 }
 
 // =========================================================================================================
 
 
 void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap_worker_data& procData){
-    cv::Mat imgTmp = img.clone();
-    std::vector<cv::Vec3f> circles;
-
-#if defined(SHAPE_DETEC)
+    cv::Mat imgProcDebug = img.clone();
     cv::Mat imgShape = img.clone();
-    shapeDetection(imgShape, circles);
-    imgTmp = imgShape.clone();
-#elif defined(COLOR_DETEC)
     cv::Mat imgColor = img.clone();
-    colorDetection(imgColor, circles);
-    imgTmp = imgColor.clone();
-#endif
+
+    std::vector<cv::Vec3f> circles;
+    
+    shapeDetection(imgShape, circles);
+    // colorDetection(imgColor, circles);
+
+    calculateDistance(circles, procData);
 
 #ifdef DEBUG
-    cameraPrintInfo(imgTmp, procData);
-    drawCircles(imgTmp, imgTmp, circles);
+    cameraPrintInfo(imgProcDebug, procData, circles);
+    drawCircles(imgProcDebug, imgProcDebug, procData, circles);
 #endif
 
-    imgOut = imgTmp.clone();
-    calculateDistance(circles, procData);
+    imgOut = imgProcDebug.clone();
 }
 
 
