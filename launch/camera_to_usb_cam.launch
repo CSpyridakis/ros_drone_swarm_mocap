@@ -1,9 +1,10 @@
 <launch>
   <!-- TODO: May need to change these arguments. Available resolutions 1920x1080, 1280x720 and 640x480  -->
+  <arg name="nodeID" value="1" />
   <arg name="w_res" value="1280" />
   <arg name="h_res" value="720" />
 
-  <node name="usb_cam_1" pkg="usb_cam" type="usb_cam_node" output="screen" >
+  <node name="usb_cam_$(arg nodeID)" pkg="usb_cam" type="usb_cam_node" output="screen" >
     <param name="video_device" value="/dev/video0" />
     <param name="framerate" value="30" />
     <param name="camera_frame_id" value="usb_cam" />
