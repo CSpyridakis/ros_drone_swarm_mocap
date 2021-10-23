@@ -51,7 +51,7 @@ int main(int argc, char **argv){
         ROS_WARN("Parameters load failed");
     }
     procData.nodeID = nodeID;
-    procData.
+    // procData.
 
     std::string subImageTopic = "/usb_cam_" + std::to_string(nodeID) + "/image_raw";
     std::string pubImageTopic = "/usb_cam_" + std::to_string(nodeID) + "/processed_image";
