@@ -1,29 +1,54 @@
 <launch>
+    <!--  ========================================================== PARAMS ========================================================== -->
+    <!-- Available options: Desktop | Raspberry -->
+    <arg name="device" value="Desktop" />
+
     <!-- TODO: May need to change this argument  -->
     <arg name="nodeID" value="1" />
 
     <!-- Read parameters -->
     <rosparam command="load" file="$(find ros_drone_swarm_mocap)/config/params.yaml"/>
 
+
+    <!--  ========================================================== CAMERA ========================================================== -->
+    
     <!-- Camera node -->
     <include file="$(find ros_drone_swarm_mocap)/launch/camera_to_usb_cam.launch"/> 
+    
+    <!-- Camera undistortion -->
+    <node name="image_proc$(arg nodeID)" pkg="image_proc" type="image_proc" output="screen" ns="/usb_cam_$(arg nodeID)">
+        <remap from="/usb_cam/image_raw" to="/usb_cam_$(arg nodeID)/image_raw"/>
+        <remap from="/usb_cam/camera_info" to="/usb_cam_$(arg nodeID)/camera_info"/>
+    </node>
+    
     <!--    View camera to webpage     http://{NODE's IP}:8080     -->
     <node name="web_video_server_$(arg nodeID)" pkg="web_video_server" type="web_video_server" output="screen" />
+
+
+    <!--  ======================================================= BUSINESS LOGIC ======================================================= -->
 
     <!-- Ball Detection -->
     <node name="worker_node_$(arg nodeID)" pkg="ros_drone_swarm_mocap" type="worker_node" output="screen" />
 
-    <!-- IMU -->
-    <node name="imu_$(arg nodeID)" pkg="adafruit_10dof_imu" type="imuout" output="screen"/>
-    <remap from="/chatter" to="/chatter_$(arg nodeID)"/>
 
-    <!-- GPS -->
-    <node name="nmea_serial_driver_$(arg nodeID)" pkg="nmea_navsat_driver" type="nmea_serial_driver" output="screen">
-        <param name="port" value="/dev/ttyS0" />
-        <param name="baud" value="9600" />
-    </node>
-    <remap from="/fix" to="/fix_$(arg nodeID)"/>
-    <remap from="/heading" to="/heading_$(arg nodeID)"/>
-    <remap from="/time_reference" to="/time_reference_$(arg nodeID)"/>
-    <remap from="/vel" to="/vel_$(arg nodeID)"/>
+    <!--  ========================================================== GPS + IMU ========================================================= -->
+    <!-- RUN THESE NODES ONLY ON RASPBERRY. -->
+    <group if="$(eval arg('device') == 'Raspberry')">
+        <!-- IMU -->
+        <node name="imu_$(arg nodeID)" pkg="adafruit_10dof_imu" type="imuout" output="screen">
+            <remap from="/chatter" to="/chatter_$(arg nodeID)"/>
+        </node>
+
+        <!-- GPS -->
+        <node name="nmea_serial_driver_$(arg nodeID)" pkg="nmea_navsat_driver"  type="nmea_serial_driver" output="screen">
+            <param name="port" value="/dev/ttyS0" />
+            <param name="baud" value="9600" />
+
+            <remap from="/fix" to="/fix_$(arg nodeID)"/>
+            <remap from="/heading" to="/heading_$(arg nodeID)"/>
+            <remap from="/time_reference" to="/time_reference_$(arg nodeID)"/>
+            <remap from="/vel" to="/vel_$(arg nodeID)"/>
+        </node>
+    </group>
+
 </launch>

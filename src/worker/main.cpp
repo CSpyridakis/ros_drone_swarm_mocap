@@ -53,7 +53,7 @@ int main(int argc, char **argv){
     procData.nodeID = nodeID;
     // procData.
 
-    std::string subImageTopic = "/usb_cam_" + std::to_string(nodeID) + "/image_raw";
+    std::string subImageTopic = "/usb_cam_" + std::to_string(nodeID) + "/image_color";
     std::string pubImageTopic = "/usb_cam_" + std::to_string(nodeID) + "/processed_image";
     std::string pubImageDataTopic = "/node/" + std::to_string(nodeID) + "/processed_data";
 

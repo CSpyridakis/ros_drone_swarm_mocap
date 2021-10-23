@@ -53,23 +53,6 @@ void drawCircles(cv::Mat img, cv::Mat& outimg, const ros_drone_swarm_mocap::moca
 // =========================================================================================================
 // =========================================================================================================
 
-void shapeDetection(cv::Mat& img, std::vector<cv::Vec3f>& circles){
-    cv::cvtColor(img, img, cv::COLOR_BGR2GRAY); 
-    cv::medianBlur(img, img, 5);
-    cv::HoughCircles(img, circles, cv::HOUGH_GRADIENT,
-                        2,                  // Accumulator resolution 
-                        img.cols,           // Min distance between circles
-                        100,                // Canny high threshold
-                        120,                // Threshold for center detection
-                        0, 200);            // Min and max radius
-}
-
-void colorDetection(cv::Mat& img, std::vector<cv::Vec3f>& circles){
-    cv::GaussianBlur(img, img, cv::Size(5,5), 5, 0);
-    cv::cvtColor(img, img, cv::COLOR_BGR2HSV);
-    // cv::inRange(img,(0, 0, 100),(120, 80, 170), img);
-}
-
 void calculateDistance(std::vector<cv::Vec3f> circles, ros_drone_swarm_mocap::mocap_worker_data& procData){
     ros_drone_swarm_mocap::detected_ball_data bd;
     for( uint k = 0; k < circles.size(); k++ ){
@@ -87,13 +70,28 @@ void calculateDistance(std::vector<cv::Vec3f> circles, ros_drone_swarm_mocap::mo
 
 void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap_worker_data& procData){
     cv::Mat imgProcDebug = img.clone();
-    cv::Mat imgShape = img.clone();
-    cv::Mat imgColor = img.clone();
+    cv::Mat imgTmp = img.clone();
 
     std::vector<cv::Vec3f> circles;
     
-    shapeDetection(imgShape, circles);
-    // colorDetection(imgColor, circles);
+#if DETECTION_MODE == MODE_COLOR_DETECTION
+    cv::GaussianBlur(imgTmp, imgTmp, cv::Size(5,5), 5, 0);
+    cv::cvtColor(imgTmp, imgTmp, cv::COLOR_BGR2HSV);
+    // cv::inRange(img,(0, 0, 100),(120, 80, 170), imgTmp);
+#elif DETECTION_MODE == MODE_SHAPE_DETECTION
+    cv::cvtColor(imgTmp, imgTmp, cv::COLOR_BGR2GRAY); 
+    cv::medianBlur(imgTmp, imgTmp, 5);
+    cv::HoughCircles(imgTmp, circles, cv::HOUGH_GRADIENT,
+                        0.5,                  // Accumulator resolution 
+                        20,                 // Min distance between circles
+                        100,                // Canny high threshold
+                        120,                // Threshold for center detection
+                        0, 200);            // Min and max radius
+
+    // cv::namedWindow("name", cv::WINDOW_NORMAL);
+    // cv::imshow("name", imgTmp);
+    // cv::waitKey(0);
+#endif
 
     calculateDistance(circles, procData);
 
@@ -102,6 +100,7 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     drawCircles(imgProcDebug, imgProcDebug, procData, circles);
 #endif
 
+    // imgOut = imgProcDebug.clone();
     imgOut = imgProcDebug.clone();
 }
 
