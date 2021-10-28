@@ -1,0 +1,8 @@
+int32 id
+int32 gaussian_kernel_size
+int32 minH
+int32 minS
+int32 minV
+int32 maxH
+int32 maxS
+int32 maxV

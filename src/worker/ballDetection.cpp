@@ -6,6 +6,47 @@
 #include "ros_drone_swarm_mocap/mocap_worker_data.h"
 #include "ros_drone_swarm_mocap/detected_ball_data.h"
 
+// -------------------------------------------
+int accumulator_resolution = 2;
+int min_distance_between_circles = 20;
+int canny_high_threshold = 100;
+int threshold_for_center_detection = 120;    
+// -------------------------------------------
+int gaussian_kernel_size = 5;
+int minV=0;
+int maxV=120;
+
+int minH = 0;
+int maxH = 80;
+
+int minS = 100;
+int maxS = 170;
+// -------------------------------------------
+
+void updateHSVvaluesCallback(const ros_drone_swarm_mocap::hsv_values::ConstPtr& msg){
+    if (msg->id == 1){  //TODO: change 
+        gaussian_kernel_size = msg->gaussian_kernel_size;
+        minV = msg->minV;
+        maxV = msg->maxV;
+        minH = msg->minH;
+        maxH = msg->maxH;
+        minS = msg->minS;
+        maxS = msg->maxS;  
+        ROS_INFO("Got new HSV values Min(%d, %d, %d), Max(%d, %d, %d)", minH, minS, minV, maxH, maxS, maxV);
+    }
+}
+
+void updateHoughvaluesCallback(const ros_drone_swarm_mocap::hough_values::ConstPtr& msg){
+    if(msg->id == 1){   //TODO: change
+        accumulator_resolution = msg->acc_res ;
+        min_distance_between_circles = msg->min_dist_betw_cir ;
+        canny_high_threshold = msg->canny_high_res ;
+        threshold_for_center_detection = msg->threshold_for_center ;
+        ROS_INFO("Got new Hough values acc:[%d] min_dist:[%d] canny:[%d] thres:[%d]", accumulator_resolution, min_distance_between_circles, canny_high_threshold, threshold_for_center_detection);
+    }
+}
+
+// -------
 void cameraPrintInfo(cv::Mat &img, const ros_drone_swarm_mocap::mocap_worker_data& procData, std::vector<cv::Vec3f>& circles){
     cv::Scalar greenColor(0, 255, 0);
     cv::Scalar redColor(0, 0, 255);
@@ -75,17 +116,18 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     std::vector<cv::Vec3f> circles;
     
 #if DETECTION_MODE == MODE_COLOR_DETECTION
-    cv::GaussianBlur(imgTmp, imgTmp, cv::Size(5,5), 5, 0);
+    cv::GaussianBlur(imgTmp, imgTmp, cv::Size(gaussian_kernel_size, gaussian_kernel_size), 5, 0);
     cv::cvtColor(imgTmp, imgTmp, cv::COLOR_BGR2HSV);
-    // cv::inRange(img,(0, 0, 100),(120, 80, 170), imgTmp);
+    // cv::inRange(img,(minH, minS, minV),(maxH, maxS, maxV), imgTmp);
+    imgProcDebug = imgTmp.clone();
 #elif DETECTION_MODE == MODE_SHAPE_DETECTION
     cv::cvtColor(imgTmp, imgTmp, cv::COLOR_BGR2GRAY); 
     cv::medianBlur(imgTmp, imgTmp, 5);
     cv::HoughCircles(imgTmp, circles, cv::HOUGH_GRADIENT,
-                        0.5,                  // Accumulator resolution 
-                        20,                 // Min distance between circles
-                        100,                // Canny high threshold
-                        120,                // Threshold for center detection
+                accumulator_resolution, // Accumulator resolution 
+                min_distance_between_circles, // Min distance between circles
+                canny_high_threshold, // Canny high threshold
+                threshold_for_center_detection, // Threshold for center detection
                         0, 200);            // Min and max radius
 
     // cv::namedWindow("name", cv::WINDOW_NORMAL);

@@ -64,6 +64,12 @@ int main(int argc, char **argv){
 
     processedData = n.advertise<ros_drone_swarm_mocap::mocap_worker_data>(pubImageDataTopic, 30);
 
+    // Misc
+#ifdef DEBUG
+    ros::Subscriber hue_sub = n.subscribe("/node/" + std::to_string(nodeID) + "/hsv_params", 5, updateHSVvaluesCallback); 
+    ros::Subscriber hough_sub = n.subscribe("/node/" + std::to_string(nodeID) + "/hough_params",5, updateHoughvaluesCallback);
+#endif
+
     ros::spin();
     return 0;
 }

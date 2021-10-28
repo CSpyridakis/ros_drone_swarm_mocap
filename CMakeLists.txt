@@ -69,6 +69,8 @@ add_message_files(
   FILES
   detected_ball_data.msg
   mocap_worker_data.msg
+  hough_values.msg
+  hsv_values.msg
 #   Message1.msg
 #   Message2.msg
 )

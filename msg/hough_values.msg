@@ -1,0 +1,5 @@
+int32 id
+int32 acc_res
+int32 min_dist_betw_cir
+int32 canny_high_res
+int32 threshold_for_center
