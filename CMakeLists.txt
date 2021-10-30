@@ -239,6 +239,8 @@ set(
   Node_sources
   src/worker/main.cpp
   src/worker/ballDetection.cpp
+  src/worker/hsvDetection.cpp
+  src/worker/houghDetection.cpp
 )
 
 # Let them as is

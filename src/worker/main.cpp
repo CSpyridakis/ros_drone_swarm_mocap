@@ -2,16 +2,19 @@
 #include <iostream>
 #include <string> 
 
+// Messages
 #include "sensor_msgs/Image.h"
 #include "ros_drone_swarm_mocap/mocap_worker_data.h"
 
-#include "worker/ballDetection.hpp"
-
-#include <cv_bridge/cv_bridge.h>
+// Opencv and image transport
 #include <opencv2/opencv.hpp>
+#include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui/highgui.hpp"
+
+// Detection
+#include "worker/ballDetection.hpp"
+#include "worker/houghDetection.hpp"
+#include "worker/hsvDetection.hpp"
 
 int nodeID = 0;
 

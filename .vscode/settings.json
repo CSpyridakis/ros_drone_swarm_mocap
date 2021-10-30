@@ -62,6 +62,18 @@
         "typeinfo": "cpp",
         "condition_variable": "cpp",
         "mutex": "cpp",
-        "csignal": "cpp"
-    }
+        "csignal": "cpp",
+        "*.ipp": "cpp"
+    },
+    "spellright.language": [
+        "English (American)",
+        "English (British)",
+        "Greek"
+    ],
+    "spellright.documentTypes": [
+        "markdown",
+        "latex",
+        "plaintext",
+        "cpp"
+    ]
 }
