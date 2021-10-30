@@ -74,6 +74,7 @@
         "markdown",
         "latex",
         "plaintext",
-        "cpp"
+        "cpp",
+        "xml"
     ]
 }

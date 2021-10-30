@@ -43,4 +43,5 @@ install_ros_packages(){
     __INST web-video-server
     __INST nmea-navsat-driver
     __INST robot-localization
+    __INST image-transport
 }

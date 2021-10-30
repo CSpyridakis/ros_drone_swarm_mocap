@@ -1,22 +1,53 @@
 <launch>
-    <!--  ========================================================== PARAMS ========================================================== -->
+
+
+    <!--  ======================================================= ARGS + PARAMS ====================================================== -->
+
+
+    <!-- TODO: You may want to change these arguments. Change nodeID also in the params.yaml file -->
+    <arg name="nodeID" value="3" />
+
     <!-- Available options: Desktop | Raspberry -->
     <arg name="device" value="Desktop" />
-
-    <!-- TODO: May need to change this argument  -->
-    <arg name="nodeID" value="1" />
+    
+    <!-- Available resolutions 1920 x 1080, 1280 x 720 and 640 x 480  -->
+    <arg name="w_res" value="1280" />
+    <arg name="h_res" value="720" />
+    <arg name="sel_camera" value="0"/>
 
     <!-- Read parameters -->
     <rosparam command="load" file="$(find ros_drone_swarm_mocap)/config/params.yaml"/>
 
 
+
     <!--  ========================================================== CAMERA ========================================================== -->
     
+
+
     <!-- Camera node -->
-    <include file="$(find ros_drone_swarm_mocap)/launch/camera_to_usb_cam.launch"/> 
+    <node name="usb_cam_$(arg nodeID)" pkg="usb_cam" type="usb_cam_node" output="screen" >
+        <param name="video_device" value="/dev/video$(arg sel_camera)" />
+
+        <param name="framerate" value="30" />
+        <param name="camera_frame_id" value="usb_cam" />
+        <!-- <param name="auto_focus" value="false" /> -->
+        <param name="io_method" value="mmap"/>
+        <param name="camera_name" value="creative_livecam" />
+
+        <!-- **************************************************** -->
+        <!-- === With creative camera, better resolution === -->
+        <param name="pixel_format" value="yuyv" />     
+        <!-- === With creative camera, better framerate === -->
+        <!-- <param name="pixel_format" value="mjpeg" />              -->
+        <!-- **************************************************** -->
+
+        <param name="camera_info_url" value="package://ros_drone_swarm_mocap/calibration/creative-$(arg w_res)x$(arg h_res).yaml" />
+        <param name="image_width" value="$(arg w_res)" />
+        <param name="image_height" value="$(arg h_res)" />
+    </node>
     
     <!-- Camera undistortion -->
-    <node name="image_proc$(arg nodeID)" pkg="image_proc" type="image_proc" output="screen" ns="/usb_cam_$(arg nodeID)">
+    <node name="image_proc_$(arg nodeID)" pkg="image_proc" type="image_proc" output="screen" ns="/usb_cam_$(arg nodeID)">
         <remap from="/usb_cam/image_raw" to="/usb_cam_$(arg nodeID)/image_raw"/>
         <remap from="/usb_cam/camera_info" to="/usb_cam_$(arg nodeID)/camera_info"/>
     </node>
@@ -25,13 +56,21 @@
     <node name="web_video_server_$(arg nodeID)" pkg="web_video_server" type="web_video_server" output="screen" />
 
 
+
     <!--  ======================================================= BUSINESS LOGIC ======================================================= -->
 
+
+
     <!-- Ball Detection -->
-    <node name="worker_node_$(arg nodeID)" pkg="ros_drone_swarm_mocap" type="worker_node" output="screen" />
+    <node name="worker_node_$(arg nodeID)" pkg="ros_drone_swarm_mocap" type="worker_node" output="screen"/>
+
+
 
 
     <!--  ========================================================== GPS + IMU ========================================================= -->
+
+
+
     <!-- RUN THESE NODES ONLY ON RASPBERRY. -->
     <group if="$(eval arg('device') == 'Raspberry')">
         <!-- IMU -->
@@ -50,5 +89,6 @@
             <remap from="/vel" to="/vel_$(arg nodeID)"/>
         </node>
     </group>
+
 
 </launch>

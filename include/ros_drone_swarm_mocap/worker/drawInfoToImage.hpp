@@ -6,6 +6,12 @@
 #include "ros_drone_swarm_mocap/mocap_worker_data.h"
 #include "ros_drone_swarm_mocap/detected_ball_data.h"
 
+/**
+ * \brief
+ * \param img
+ * \param procData
+ * \param circles 
+*/
 void cameraPrintInfo(cv::Mat &img, const ros_drone_swarm_mocap::mocap_worker_data& procData, std::vector<cv::Vec3f>& circles){
     cv::Scalar greenColor(0, 255, 0);
     cv::Scalar redColor(0, 0, 255);
@@ -30,6 +36,12 @@ void cameraPrintInfo(cv::Mat &img, const ros_drone_swarm_mocap::mocap_worker_dat
 }
 
 /**
+ * \brief 
+ * 
+ * \param img
+ * \param outing
+ * \param procData
+ * \param circles
  */
 void drawCircles(cv::Mat img, cv::Mat& outimg, const ros_drone_swarm_mocap::mocap_worker_data procData, std::vector<cv::Vec3f>& circles){
     outimg = img.clone();
