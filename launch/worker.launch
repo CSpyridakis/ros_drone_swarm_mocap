@@ -4,16 +4,20 @@
     <!--  ======================================================= ARGS + PARAMS ====================================================== -->
 
 
+
     <!-- TODO: You may want to change these arguments. Change nodeID also in the params.yaml file -->
     <arg name="nodeID" value="3" />
 
-    <!-- Available options: Desktop | Raspberry -->
-    <arg name="device" value="Desktop" />
+    <!-- Available options: Desktop | Raspberry | Testing_node -->
+    <arg name="device" value="Testing_node" />
     
     <!-- Available resolutions 1920 x 1080, 1280 x 720 and 640 x 480  -->
     <arg name="w_res" value="1280" />
     <arg name="h_res" value="720" />
     <arg name="sel_camera" value="0"/>
+
+    <!-- For Testing_node the rosbag file to play -->
+    <arg name="bagfile" value="2021-10-31-10-25-26"/>
 
     <!-- Read parameters -->
     <rosparam command="load" file="$(find ros_drone_swarm_mocap)/config/params.yaml"/>
@@ -89,6 +93,17 @@
             <remap from="/vel" to="/vel_$(arg nodeID)"/>
         </node>
     </group>
+
+
+
+    <!--  ========================================================== TESTING ========================================================= -->
+    <!-- Use rosbag data to simulate gps and imu -->
+
+
+
+     <group if="$(eval arg('device') == 'Testing_node')">
+        <node name="testing_node_$(arg nodeID)" pkg="rosbag" type="play" args="--clock $(find ros_drone_swarm_mocap)/bags/$(arg bagfile).bag"/>
+     </group>
 
 
 </launch>

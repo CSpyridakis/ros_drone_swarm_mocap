@@ -75,6 +75,7 @@
         "latex",
         "plaintext",
         "cpp",
-        "xml"
+        "xml",
+        "shellscript"
     ]
 }
