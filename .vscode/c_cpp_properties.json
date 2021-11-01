@@ -5,8 +5,9 @@
             "includePath": [
                 "${default}",
                 "/opt/ros/melodic/include/",
-                "/home/cs-du/catkin_ws/devel/include/",
-                "${workspaceFolder}/include/ros_drone_swarm_mocap"
+                "${workspaceFolder}/../../devel/include/",
+                "${workspaceFolder}/include/ros_drone_swarm_mocap",
+                "/usr/include/opencv2/**"
             ],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "gnu11",

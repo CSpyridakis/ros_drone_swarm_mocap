@@ -37,8 +37,8 @@ float calculateDistanceFull(float focalLengthInMillimeter, float objectsRealSize
  * \return 
  */
 float calculateDistanceWithDataStruct(int objectSizeInPixels, ros_drone_swarm_mocap::mocap_worker_data& procData){
-    return calculateDistanceFull(procData.focalLengthInMillimeters, procData.objectsRealSizeInMeter, 
-                                    procData.imageSizeInPixels, objectSizeInPixels, procData.sensorSizeInMillimeters);
+    return calculateDistanceFull(procData.XfocalLengthInMillimeters, procData.objectsRealSizeInMeter, 
+                                    procData.imageWidthInPixels, objectSizeInPixels, procData.XsensorSizeInMillimeters);
 }
 
 

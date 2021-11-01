@@ -3,8 +3,9 @@
 #include <string> 
 
 // Messages
-#include "sensor_msgs/Image.h"
 #include "ros_drone_swarm_mocap/mocap_worker_data.h"
+#include "sensor_msgs/Image.h"
+#include "sensor_msgs/CameraInfo.h"
 
 // Opencv and image transport
 #include <opencv2/opencv.hpp>
@@ -64,19 +65,33 @@ int main(int argc, char **argv){
     ros::init(argc, argv, "detect_ball");
     ros::NodeHandle n;
     image_transport::ImageTransport it(n);
-    
-    // Read parameters
+
+    // Read parameters and other important values
     int nodeID = 3;
+    float objRealSize = 0.0;
+    float XsensorSizeInMillimeter = 0.0;
+    float YsensorSizeInMillimeter = 0.0;
     try{
         n.getParam("nodeID", nodeID);
+        n.getParam("ballRealSizeInMeter", objRealSize);
+        n.getParam("XsensorSizeInMillimeter", XsensorSizeInMillimeter);
+        n.getParam("YsensorSizeInMillimeter", YsensorSizeInMillimeter);
         ROS_INFO("Parameters loaded ID[%d]", nodeID);
     }
     catch(int e){
         ROS_WARN("Parameters load failed");
     }
     procData.nodeID = nodeID;
-    // TODO: fill mics values
-    // procData.
+    sensor_msgs::CameraInfo::ConstPtr camera_parameters = ros::topic::waitForMessage<sensor_msgs::CameraInfo>("/usb_cam_" + std::to_string(nodeID) + "/camera_info", n);
+    procData.imageHeightInPixels = camera_parameters->height;
+    procData.imageWidthInPixels = camera_parameters->width;
+    procData.XfocalLengthInMillimeters = camera_parameters->P[0];
+    procData.YfocalLengthInMillimeters = camera_parameters->P[5];
+    procData.XFieldOfViewInAngles = 2 * atan((float)procData.imageWidthInPixels  / (2 * (float)procData.XfocalLengthInMillimeters)) * 180.0 / CV_PI ;
+    procData.YFieldOfViewInAngles = 2 * atan((float)procData.imageHeightInPixels / (2 * (float)procData.YfocalLengthInMillimeters)) * 180.0 / CV_PI ;
+    procData.objectsRealSizeInMeter = objRealSize;
+    procData.XsensorSizeInMillimeters = XsensorSizeInMillimeter;
+    procData.YsensorSizeInMillimeters = YsensorSizeInMillimeter;
 
     // Create topics names
     std::string subImageTopic = "/usb_cam_" + std::to_string(nodeID) + "/image_color";

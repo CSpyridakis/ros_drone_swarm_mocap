@@ -1,8 +1,0 @@
-<launch>
-    
-    <!-- Available options: Desktop | Raspberry -->
-    <arg name="device" value="Desktop" />
-
-    <!-- TODO: May need to change this argument  -->
-    <arg name="nodeID" value="1" />
-</launch>

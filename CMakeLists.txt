@@ -248,3 +248,22 @@ add_executable( ${Node_name}_node  ${Node_sources})
 add_dependencies(${Node_name}_node ${${Node_name}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(${Node_name}_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 # ____________________________________________________________________________________________
+
+
+
+# ---------------------------------------------------------------------------------------------
+#                                  Create a new executable node
+# ---------------------------------------------------------------------------------------------
+# TODO: replace content here
+set(Node_name station)
+set(
+  Node_sources
+  src/station/main.cpp
+  src/station/trilateration.cpp
+)
+
+# Let them as is
+add_executable( ${Node_name}_node  ${Node_sources})
+add_dependencies(${Node_name}_node ${${Node_name}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(${Node_name}_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+# ____________________________________________________________________________________________

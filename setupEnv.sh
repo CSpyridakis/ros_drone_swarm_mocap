@@ -10,6 +10,17 @@ download_imu_package(){
     (cd ~/catkin_ws/src/ && git clone https://github.com/CSpyridakis/ros-adafruit-10dof-imu.git)
 }
 
+install_ros_packages(){
+    __INST usb-cam
+    __INST image-proc
+    __INST web-video-server
+    __INST nmea-navsat-driver
+    __INST robot-localization
+    __INST image-transport
+    __INST tf2
+    __INST tf2_ros
+}
+
 setup_uart(){
     # 1. Add ‘enable_uart=1’ to /boot/config.txt file
     sudo bash -c ’echo "enable_uart=1" >> /boot/config.txt’
@@ -34,15 +45,6 @@ setup_i2c(){
     # 2. Give privileges to user
     sudo adduser $USER i2c
     sudo chmod g+r /dev/i2c-1
-}
-
-install_ros_packages(){
-    __INST usb-cam
-    __INST image-proc
-    __INST web-video-server
-    __INST nmea-navsat-driver
-    __INST robot-localization
-    __INST image-transport
 }
 
 doAll(){

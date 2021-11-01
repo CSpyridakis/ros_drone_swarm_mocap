@@ -6,10 +6,10 @@
 
 
     <!-- TODO: You may want to change these arguments. Change nodeID also in the params.yaml file -->
-    <arg name="nodeID" value="3" />
+    <arg name="nodeID" value="1" />
 
     <!-- Available options: Desktop | Raspberry | Testing_node -->
-    <arg name="device" value="Testing_node" />
+    <arg name="device" value="Desktop" />
     
     <!-- Available resolutions 1920 x 1080, 1280 x 720 and 640 x 480  -->
     <arg name="w_res" value="1280" />
@@ -70,7 +70,6 @@
 
 
 
-
     <!--  ========================================================== GPS + IMU ========================================================= -->
 
 
@@ -93,6 +92,44 @@
             <remap from="/vel" to="/vel_$(arg nodeID)"/>
         </node>
     </group>
+
+
+    <!--  =========================================================== TFs ============================================================ -->
+
+
+    <!-- args: "static_transform_publisher x y z yaw pitch roll frame_id child_frame_id" with rotations yaw: Z , pitch: Y, roll: X     -->
+    <!-- <node name="imu_$(arg nodeID)_tf" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0 120 120 120 world child"/> -->
+
+    <!-- <node name="gps_$(arg nodeID)_tf" pkg="tf2_ros" type="static_transform_publisher" args=""/> -->
+
+    <node name="navsat_$(arg nodeID)" pkg="robot_localization" type="navsat_transform_node" output="screen">
+        <param name="" value=""/>
+
+        <remap from="/imu/data" to="/chatter_$(arg nodeID)"/>
+        <remap from="/gps/fix" to="/fix_$(arg nodeID)"/>
+    </node>
+
+
+    <node name="ekf_$(arg nodeID)" pkg="robot_localization" type="ekf_localization_node">
+        <param name="frequency" value="30"/>
+
+        <param name="" value=""/>
+        <param name="" value=""/>
+        <param name="" value=""/>
+        <param name="" value=""/>
+        <param name="" value=""/>
+        <param name="" value=""/>
+        
+        <rosparam param="imu0_config">
+            [   
+                false, false, false,    <!--  x          , y            , z         --> 
+                true, true, true,       <!--  roll       , pitch        , yaw       -->
+                true, true, true,       <!--  x velo     , y velo       , z velo    -->
+                true, true, true,       <!--  roll velo  , pitch velo   , yaw velo  -->
+                false, false, false     <!--- x accel    , y accel      , z accel   -->
+            ]
+        </rosparam>
+    </node>
 
 
 
