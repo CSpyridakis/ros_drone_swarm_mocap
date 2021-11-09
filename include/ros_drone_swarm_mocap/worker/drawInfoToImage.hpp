@@ -58,8 +58,26 @@ void drawCircles(cv::Mat img, cv::Mat& outimg, const ros_drone_swarm_mocap::moca
         // circle outline
         cv::circle(outimg, center, c[2], blueColor, 2, cv::LINE_AA);
         
-        resTxt = "(" + std::to_string(c[0]) + "," + std::to_string(c[1]) + ") - " + std::to_string(c[2]) + " - [" + std::to_string(procData.balls[k].distance_from_camera) + "]";
-        cv::putText(outimg, resTxt, cv::Point(c[0]-c[2], c[1]-c[2]), cv::FONT_HERSHEY_DUPLEX, 1, redColor, 1);
+        std::stringstream stream;
+        std::string x = std::to_string(c[0]);
+        std::string y = std::to_string(c[1]);
+        std::string R = std::to_string(c[2]);
+
+        stream.str(std::string());
+        stream << std::fixed << std::setprecision(2) << procData.balls[k].distance_from_camera;
+        std::string L = stream.str();
+
+        stream.str(std::string());
+        stream << std::fixed << std::setprecision(2) << procData.balls[k].xangle;
+        std::string xa = stream.str();
+
+        stream.str(std::string());
+        stream << std::fixed << std::setprecision(2) << procData.balls[k].yangle;
+        std::string ya = stream.str();
+
+        resTxt = "(" + x + "," + y + ") R " + R + " D [" + L + "]" + "<" + xa + ", " + ya + ">";
+        
+        cv::putText(outimg, resTxt, cv::Point(c[0]-c[2], c[1]-c[2]), cv::FONT_HERSHEY_DUPLEX, 0.8, redColor, 1);
     }
 }
 

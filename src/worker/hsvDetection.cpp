@@ -28,6 +28,6 @@ void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
     cv::GaussianBlur(img, img, cv::Size(gaussian_kernel_size, gaussian_kernel_size), 5, 0);
     cv::cvtColor(img, img, cv::COLOR_BGR2HSV);
     cv::inRange(img, cv::Scalar(minH, minS, minV), cv::Scalar(maxH, maxS, maxV), img);
-
+    
     // imgProcDebug = imgTmp.clone();
 }

@@ -1,9 +1,9 @@
 #include "worker/houghDetection.hpp"
 
 int accumulator_resolution = 2;
-int min_distance_between_circles = 20;
-int canny_high_threshold = 100;
-int threshold_for_center_detection = 120;  
+int min_distance_between_circles = 500;
+int canny_high_threshold = 120;
+int threshold_for_center_detection = 100;  
 
 void updateHoughvaluesCallback(const ros_drone_swarm_mocap::hough_values::ConstPtr& msg){
     if(msg->id == 1){   //TODO: change

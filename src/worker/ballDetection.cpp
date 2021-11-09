@@ -14,6 +14,7 @@
 #include "worker/misc.hpp"
 
 void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap_worker_data& procData){
+    procData.balls.clear();
     cv::Mat imgProcDebug = img.clone();
     cv::Mat imgTmp = img.clone();
 
@@ -28,9 +29,11 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
 
     saveDistancesToProcData(circles, procData);
 
+    // ROS_INFO("%f", calculateSensorSize(55, 0.5, procData));
+
 #ifdef DEBUG
     cameraPrintInfo(imgProcDebug, procData, circles);
-    drawCircles(imgProcDebug, imgProcDebug, procData, circles);
+    // drawCircles(imgProcDebug, imgProcDebug, procData, circles);
 #endif
 
     imgOut = imgProcDebug.clone();
