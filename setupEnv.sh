@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# TODO: edit them
+WIFI_SSID=""
+WIFI_PASS=""
+
 ros_version=`echo $ROS_DISTRO`
 
 __INST (){
@@ -19,6 +23,21 @@ install_ros_packages(){
     __INST image-transport
     __INST tf2
     __INST tf2_ros
+}
+
+basic_setup(){
+    # Disable gui on boot
+    sudo systemctl set-default multi-user
+    gnome-session-quit
+
+    # Disable suspend
+    sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+
+    # Connect to wifi
+    if [ ! -e ${WIFI_SSID} ] && [ ! -e ${WIFI_PASS} ] ; then
+        echo "Connect to [${WIFI_SSID}] with password [${WIFI_PASS}]"
+        nmcli device wifi connect ${WIFI_SSID} password ${WIFI_PASS} hidden yes
+    fi
 }
 
 setup_uart(){
@@ -60,6 +79,9 @@ help_menu(){
     echo 
     echo "Options:"
     echo "  -h,  --help                 show this help page"
+    echo "  -b,  --basic                basic setup (connect to wifi, disable autosuspend, etc.)"
+    echo "       --ssid                 wifi's SSID"
+    echo "       --pass                 wifi's password"
     echo "  -i,  --imu-package          download needed IMU ROS package from GitHub"
     echo "  -p,  --ros-packages         install all ROS requirement packages from APT"
     echo "  -U,  --setup-uart           setup UART to read messages from there"
@@ -73,6 +95,10 @@ do
     case "$1" in
         -i | --imu-package)     download_imu_package    ; shift ;;
         -p | --ros-packages)    install_ros_packages    ; shift ;;
+
+        -b | --basic)           basic_setup             ; shift ;;
+             --ssid)            WIFI_SSID=$2    ; shift ; shift ;;
+             --pass)            WIFI_PASS=$2    ; shift ; shift ;;
 
         -U | --setup-uart)      setup_uart              ; shift ;;  
         -I | --setup-i2c)       setup_i2c               ; shift ;;
