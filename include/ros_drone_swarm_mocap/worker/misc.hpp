@@ -96,4 +96,25 @@ void fixMatForImageTransfer(cv::Mat &img){
     }
 }
 
+/**
+ * \brief
+ * 
+ * \param img1
+ * \param img2
+ * \param outimage
+ */
+void combineImages(cv::Mat img1, cv::Mat img2, cv::Mat &outimage){
+    fixMatForImageTransfer(img1);
+    fixMatForImageTransfer(img2);
+
+    int rows = img1.rows + img2.rows;
+    int cols = std::max(img1.cols, img2.cols);
+
+    cv::Mat res = cv::Mat(rows, cols, CV_8UC3);
+
+    img1.copyTo(res(cv::Rect(0, 0, img1.cols, img1.rows)));
+    img2.copyTo(res(cv::Rect(0, img1.rows, img2.cols, img2.rows)));
+    outimage = res.clone();
+}
+
 #endif //MISC_HPP

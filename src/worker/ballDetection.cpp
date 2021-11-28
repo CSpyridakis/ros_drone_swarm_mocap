@@ -16,28 +16,32 @@
 void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap_worker_data& procData){
     procData.balls.clear();
     cv::Mat imgProcDebug = img.clone();
-    cv::Mat imgTmp = img.clone();
+    cv::Mat imgTmp;
 
     std::vector<cv::Vec3f> circles;
     
+    cv::Mat hsvImg = img.clone();
+    cv::Mat houghImg = img.clone();
+
 #if DETECTION_MODE == MODE_COLOR_DETECTION
-    hsvDetection(imgTmp, circles);
-    imgProcDebug = imgTmp.clone();
+    hsvDetection(hsvImg, circles);
+    fixMatForImageTransfer(hsvImg);
+    combineImages(hsvImg, cv::Mat(0,0,CV_8UC3), imgTmp);
 #elif DETECTION_MODE == MODE_SHAPE_DETECTION
-    houghDetection(imgTmp, circles);
+    houghDetection(houghImg, circles);
+    combineImages(houghImg, cv::Mat(0,0,CV_8UC3), imgTmp);
 #endif
 
     saveDistancesToProcData(circles, procData);
 
-    // ROS_INFO("%f", calculateSensorSize(55, 0.5, procData));
-
 #ifdef DEBUG
     cameraPrintInfo(imgProcDebug, procData, circles);
     // drawCircles(imgProcDebug, imgProcDebug, procData, circles);
+    combineImages(imgProcDebug, imgTmp, imgTmp);
 #endif
 
-    imgOut = imgProcDebug.clone();
-    fixMatForImageTransfer(imgOut);
+    combineImages(imgTmp, img, imgOut);
+    // combineImages(imgTmp, cv::Mat(0,0,CV_8UC3), imgOut);
 }
 
 
