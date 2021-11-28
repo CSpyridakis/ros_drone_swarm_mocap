@@ -18,12 +18,16 @@ float calculateAngle(int fov, int pixelLenght, int NthPixel, bool yaxis = false)
     return (float)(NthPixel >= pixelLenght/2 ) ? angle : -angle  ;                  // Calculate sign (for x axis xmiddle < 0 -> negative angles)
 }
 
+/**
+ */
 float calculateSensorsSizeFull(float focalLengthInMillimeter, float objectsRealSizeInMeter, 
                             int imageSizeInPixels, int objectsSizeInPixels, float objectsDistanceFromCameraInMeters){
 
     return (float)( (focalLengthInMillimeter * objectsRealSizeInMeter * (float)imageSizeInPixels) / ((float)objectsSizeInPixels * objectsDistanceFromCameraInMeters) );
 }
 
+/**
+ */
 float calculateSensorSize(int objectSizeInPixels, float objectsDistanceFromCameraInMeters, 
                         ros_drone_swarm_mocap::mocap_worker_data& procData){
     return calculateSensorsSizeFull(procData.XfocalLengthInMillimeters, procData.objectsRealSizeInMeter, procData.imageWidthInPixels,
@@ -37,7 +41,7 @@ float calculateSensorSize(int objectSizeInPixels, float objectsDistanceFromCamer
  * \param objectsRealSizeInMeter
  * \param imageSizeInPixels
  * \param objectsSizeInPixels
- * \param sensorSizeInMillileter
+ * \param sensorSizeInMillimeter
  * 
  * \return 
  */
@@ -73,7 +77,7 @@ void saveDistancesToProcData(std::vector<cv::Vec3f> circles, ros_drone_swarm_moc
     for( uint k = 0; k < circles.size(); k++ ){
         bd.image_plane_x = circles[k][0];
         bd.image_plane_y = circles[k][1];
-        bd.image_plane_y = circles[k][2];
+        bd.image_plane_r = circles[k][2];
         bd.distance_from_camera = calculateDistanceWithDataStruct(circles[k][2], procData);
         bd.xangle = calculateAngle(procData.XFieldOfViewInAngles, procData.imageWidthInPixels, bd.image_plane_x);
         bd.yangle = calculateAngle(procData.YFieldOfViewInAngles, procData.imageHeightInPixels, bd.image_plane_y, true);
