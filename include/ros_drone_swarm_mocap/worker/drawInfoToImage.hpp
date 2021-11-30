@@ -53,6 +53,7 @@ void drawCircles(cv::Mat img, cv::Mat& outimg, const ros_drone_swarm_mocap::moca
         int x = bd.image_plane_x;
         int y = bd.image_plane_y;
         float r = bd.image_plane_r;
+        float d = bd.distance_from_camera;
         float ax = bd.xangle;
         float ay = bd.yangle;
         cv::Point center(x, y);
@@ -62,7 +63,7 @@ void drawCircles(cv::Mat img, cv::Mat& outimg, const ros_drone_swarm_mocap::moca
         // cv::circle(outimg, center, r, blueColor, 2, cv::LINE_AA);
         cv::rectangle(outimg, cv::Rect(x - r, y - r, r*2, r*2), blueColor,2);
 
-        std::string textD = "Distance: " + std::to_string(r);
+        std::string textD = "Distance: " + std::to_string(d);
         std::string textAx = "Angle x: " + std::to_string(ax);
         std::string textAy = "Angle y: " + std::to_string(ay);
         cv::putText(outimg, textD, cv::Point(x-r, y-r-50), cv::FONT_HERSHEY_DUPLEX, 0.7, redColor, 1);

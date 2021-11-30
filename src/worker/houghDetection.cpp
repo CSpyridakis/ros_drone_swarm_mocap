@@ -25,6 +25,8 @@ void houghDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
                 threshold_for_center_detection, // Threshold for center detection
                 0, 200);                        // Min and max radius
 
+    // cv::Canny(imgblur, imgCanny, canny_high_threshold, canny_high_threshold/2);
+
     // cv::namedWindow("name", cv::WINDOW_NORMAL);
     // cv::imshow("name", imgTmp);
     // cv::waitKey(0);

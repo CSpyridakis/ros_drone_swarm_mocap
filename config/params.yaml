@@ -1,5 +1,5 @@
 nodeID: 1                    # TODO: change this id value for each drone, need to change also id on worker.launch
 nodeType: "mocap client"
 ballRealSizeInMeter: 0.144     # 0.06977 : baseball ball | 0.03942 : purple ping pong ball  | 0.24 Google ball |  0.208 Purple scoccer ball | 0.144 yelllow big tennis ball
-XsensorSizeInMillimeter: 2959.689209
+XsensorSizeInMillimeter: 1354.724121 # 2959.689209
 YsensorSizeInMillimeter: 10

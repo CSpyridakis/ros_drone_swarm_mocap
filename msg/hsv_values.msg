@@ -6,3 +6,4 @@ int32 minV
 int32 maxH
 int32 maxS
 int32 maxV
+int32 di_er_kernel

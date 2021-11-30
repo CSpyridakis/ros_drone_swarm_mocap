@@ -22,6 +22,8 @@ float calculateAngle(int fov, int pixelLenght, int NthPixel, bool yaxis = false)
  */
 float calculateSensorsSizeFull(float focalLengthInMillimeter, float objectsRealSizeInMeter, 
                             int imageSizeInPixels, int objectsSizeInPixels, float objectsDistanceFromCameraInMeters){
+    
+    // ROS_INFO("\nfocalLengthInMillimeter: %f  \nobjectsRealSizeInMeter: %f \nimageSizeInPixels: %d \nobjectsSizeInPixels: %d \nobjectsDistanceFromCameraInMeters:%f\n", focalLengthInMillimeter, objectsRealSizeInMeter, imageSizeInPixels, objectsSizeInPixels, objectsDistanceFromCameraInMeters);
 
     return (float)( (focalLengthInMillimeter * objectsRealSizeInMeter * (float)imageSizeInPixels) / ((float)objectsSizeInPixels * objectsDistanceFromCameraInMeters) );
 }
@@ -47,6 +49,8 @@ float calculateSensorSize(int objectSizeInPixels, float objectsDistanceFromCamer
  */
 float calculateDistanceFull(float focalLengthInMillimeter, float objectsRealSizeInMeter, 
                             int imageSizeInPixels, int objectsSizeInPixels, float sensorSizeInMillileter ){
+
+    // ROS_INFO("\nfocalLengthInMillimeter: %f  \nobjectsRealSizeInMeter: %f \nimageSizeInPixels: %d \nobjectsSizeInPixels: %d \nsensorSizeInMillimeter:%f\n", focalLengthInMillimeter, objectsRealSizeInMeter, imageSizeInPixels, objectsSizeInPixels, sensorSizeInMillileter);
 
     return (float)( (focalLengthInMillimeter * objectsRealSizeInMeter * (float)imageSizeInPixels) / ((float)objectsSizeInPixels * sensorSizeInMillileter) );
 }
@@ -78,10 +82,11 @@ void saveDistancesToProcData(std::vector<cv::Vec3f> circles, ros_drone_swarm_moc
         bd.image_plane_x = circles[k][0];
         bd.image_plane_y = circles[k][1];
         bd.image_plane_r = circles[k][2];
-        bd.distance_from_camera = calculateDistanceWithDataStruct(circles[k][2], procData);
+        bd.distance_from_camera = calculateDistanceWithDataStruct(2*bd.image_plane_r, procData);
         bd.xangle = calculateAngle(procData.XFieldOfViewInAngles, procData.imageWidthInPixels, bd.image_plane_x);
         bd.yangle = calculateAngle(procData.YFieldOfViewInAngles, procData.imageHeightInPixels, bd.image_plane_y, true);
-        ROS_INFO("Circle - %d Center: (%d, %d) | Distance: %f | Angle x: %f | Angle y: %f", k,  bd.image_plane_x, bd.image_plane_y,  bd.distance_from_camera,  bd.xangle, bd.yangle);
+        // ROS_INFO("Circle - %d Center: (%d, %d) | Distance: %f | Angle x: %f | Angle y: %f", k,  bd.image_plane_x, bd.image_plane_y,  bd.distance_from_camera,  bd.xangle, bd.yangle);
+        // ROS_INFO("Sensorsize: %f\n", calculateSensorSize(2*bd.image_plane_r, 1.0, procData));
     }
     procData.balls.push_back(bd);
 }
