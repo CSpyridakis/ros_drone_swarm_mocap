@@ -6,7 +6,12 @@ WIFI_PASS=""
 
 ros_version=`echo $ROS_DISTRO`
 
+CLR_RST='\e[0m'
+CLR_RED='\e[0;31m'
+CLR_YELLOW='\e[1;33m'
+
 __INST (){
+    echo -e "${CLR_YELLOW} Try to install: ${CLR_RED} $@ ${CLR_RST}"
     sudo apt-get -y install ros-${ros_version}-$@
 }
 

@@ -39,7 +39,7 @@ void CallbackFunction(const sensor_msgs::Image::ConstPtr& inImage){
         feedIn = cv_bridge::toCvCopy(inImage, sensor_msgs::image_encodings::BGR8)->image;
     }
     catch(cv_bridge::Exception& e){
-        ROS_ERROR("CV_BRIDGE COPY EXPEPTION");
+        ROS_ERROR("CV_BRIDGE COPY EXCEPTION");
         return;
     }
     if (feedIn.empty()) return;
