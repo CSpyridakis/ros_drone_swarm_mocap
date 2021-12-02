@@ -11,7 +11,7 @@
 #define MODE_COLOR_DETECTION 0
 #define MODE_SHAPE_DETECTION 1
 
-#define DETECTION_MODE MODE_COLOR_DETECTION
+#define DETECTION_MODE MODE_SHAPE_DETECTION
 
 /**
  * \brief Detect ball in camera plane

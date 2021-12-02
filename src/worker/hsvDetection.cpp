@@ -1,14 +1,14 @@
 #include "worker/hsvDetection.hpp"
-// #include "worker/misc.hpp"
-int gaussian_kernel_size = 5;
-int minH = 40;
-int minS = 70;
-int minV = 150;
-int maxH = 60;
-int maxS = 120;
-int maxV = 255;
-int di_er_kernel = 1;
-float scale = 0.3;
+#include "worker/misc.hpp"
+
+static int gaussian_kernel_size = 5;
+static int minH = 40;
+static int minS = 70;
+static int minV = 150;
+static int maxH = 60;
+static int maxS = 120;
+static int maxV = 255;
+static int di_er_kernel = 1;
 
 void updateHSVvaluesCallback(const ros_drone_swarm_mocap::hsv_values::ConstPtr& msg){
     if (msg->id == 1){  //TODO: change 
@@ -21,20 +21,9 @@ void updateHSVvaluesCallback(const ros_drone_swarm_mocap::hsv_values::ConstPtr& 
         minV = msg->minV;
         maxV = msg->maxV;
         di_er_kernel = msg->di_er_kernel;
+        if (di_er_kernel % 2 == 0 ) di_er_kernel = di_er_kernel > 0 ? di_er_kernel + 1 : 1;
         ROS_INFO("Got new HSV values Min(%d, %d, %d), Max(%d, %d, %d) | di_er_kernel: %d, gaussian_kernel_size: %d", minH, minS, minV, maxH, maxS, maxV, di_er_kernel, gaussian_kernel_size);
     }
-}
-
-void copyImageTo(cv::Mat &img, const cv::Mat toCopyImg, const std::string text, const int left_offset = 10, const int bottom_offset = 10, const float scale = 0.3){
-    cv::Mat tmpImg;
-    int resC = int(toCopyImg.cols * scale);
-    int resR = int(toCopyImg.rows * scale);
-    cv::resize(toCopyImg, tmpImg, cv::Size(resC,resR), cv::INTER_LINEAR);
-    cv::putText(tmpImg, text, cv::Point(20, 20), cv::FONT_HERSHEY_DUPLEX, 0.4, cv::Scalar(0,255,0), 1);
-    int left_off = (left_offset + resC < img.cols) ? left_offset : left_offset * scale + 20;
-    int bottom_off = (bottom_offset + resR < img.rows) ? img.rows - tmpImg.rows - 10 : bottom_offset * scale + 20;
-    // ROS_INFO("[%d, %d] -> [%d, %d , %d, %d]", toCopyImg.cols, toCopyImg.rows, left_off, bottom_off, resC, resR);
-    tmpImg.copyTo(img(cv::Rect(left_off, bottom_off, resC, resR)));
 }
 
 void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
@@ -43,7 +32,6 @@ void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
     cv::cvtColor(tmpImg, hsvImg, cv::COLOR_BGR2HSV);
     cv::inRange(hsvImg, cv::Scalar(minH, minS, minV), cv::Scalar(maxH, maxS, maxV), mask);
 
-    if (di_er_kernel % 2 == 0 ) di_er_kernel = di_er_kernel > 0 ? di_er_kernel + 1 : 1;
     cv::Mat kernelDiER = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(di_er_kernel, di_er_kernel));
     cv::dilate(mask, mask, kernelDiER);
     cv::erode(mask, mask, kernelDiER);
@@ -66,13 +54,11 @@ void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
     }
     cv::bitwise_and(img, mask, bitwise_mask);
     
-    copyImageTo(img, hsvImg, "HSV colorspace");
-    copyImageTo(img, mask, "Mask", mask.cols);
-    copyImageTo(img, bitwise_mask, "Bitwise Mask", mask.cols + 10 + bitwise_mask.cols + 10);
+    copyImageTo(img, hsvImg, "HSV colorspace", 10, 10, 0.3);
+    copyImageTo(img, mask, "Mask", mask.cols, 10, 0.3);
+    copyImageTo(img, bitwise_mask, "Bitwise Mask", mask.cols + 10 + bitwise_mask.cols + 10, 10, 0.3);
     // // Resize bitwise mask
-    
 
-    
     // calculateSensorSize(2*radius);
 // ----------------------------------------------------------------------------------------------------------
     

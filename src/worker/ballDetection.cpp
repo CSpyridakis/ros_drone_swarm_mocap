@@ -30,7 +30,8 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     // combineImages(hsvImg, cv::Mat(0,0,CV_8UC3), imgTmp);
 #elif DETECTION_MODE == MODE_SHAPE_DETECTION
     houghDetection(houghImg, circles);
-    combineImages(houghImg, cv::Mat(0,0,CV_8UC3), imgTmp);
+    // combineImages(houghImg, cv::Mat(0,0,CV_8UC3), imgTmp);
+    imgProcDebug = houghImg.clone();
 #endif
 
     saveDistancesToProcData(circles, procData);

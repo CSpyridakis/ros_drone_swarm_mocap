@@ -241,6 +241,7 @@ set(
   src/worker/ballDetection.cpp
   src/worker/hsvDetection.cpp
   src/worker/houghDetection.cpp
+  src/worker/misc.cpp
 )
 
 # Let them as is

@@ -1,4 +1,6 @@
 int32 id
+int32 median_blur
+int32 di_er_kernel
 int32 acc_res
 int32 min_dist_betw_cir
 int32 canny_high_res
