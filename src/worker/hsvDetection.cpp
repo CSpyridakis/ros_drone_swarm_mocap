@@ -1,5 +1,6 @@
 #include "worker/hsvDetection.hpp"
 #include "worker/misc.hpp"
+#define ALL_NODES 0
 
 static int gaussian_kernel_size = 5;
 static int minH = 40;
@@ -11,7 +12,7 @@ static int maxV = 255;
 static int di_er_kernel = 1;
 
 void updateHSVvaluesCallback(const ros_drone_swarm_mocap::hsv_values::ConstPtr& msg){
-    if (msg->id == 1){  //TODO: change 
+    if (msg->id == 1 || msg->id == ALL_NODES ){  //TODO: change 
         // if input gaussian kernel size is possitive and 
         gaussian_kernel_size = (msg->gaussian_kernel_size > 0 && msg->gaussian_kernel_size% 2 != 0) ? msg->gaussian_kernel_size : gaussian_kernel_size ;
         minH = msg->minH;
@@ -56,8 +57,8 @@ void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
     cv::bitwise_and(img, mask, bitwise_mask);
     
     copyImageTo(img, hsvImg, "HSV colorspace", 10, 10, 0.3);
-    copyImageTo(img, mask, "Mask", mask.cols, 10, 0.3);
-    copyImageTo(img, bitwise_mask, "Bitwise Mask", mask.cols + 10 + bitwise_mask.cols + 10, 10, 0.3);
+    copyImageTo(img, mask, "Mask", mask.cols + 200, 10, 0.3);
+    copyImageTo(img, bitwise_mask, "Bitwise Mask", img.cols - (10 + bitwise_mask.cols*0.3), 10, 0.3);
 #endif
     // // Resize bitwise mask
 
