@@ -1,7 +1,15 @@
+# -------------------------------------------------
+# Only modify these options
+# -------------------------------------------------
 
 TARGET=OUT
 SRC=main.cpp \
-	# ../../src/worker/
+	../../src/worker/misc.cpp \
+	../../src/worker/houghDetection.cpp
+
+# -------------------------------------------------
+# DO NOT MODIFY THE OPTIONS BELOW 
+# -------------------------------------------------
 
 PROJECT_NAME=ros_drone_swarm_mocap
 CATKIN_WS=catkin_ws
@@ -16,4 +24,4 @@ all:
 	g++ -o ${TARGET} ${INCLUDE} ${SRC} 
 
 clean:
-	rm ${TARGET}
+	rm -f ${TARGET}

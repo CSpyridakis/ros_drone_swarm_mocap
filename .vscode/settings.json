@@ -63,7 +63,10 @@
         "condition_variable": "cpp",
         "mutex": "cpp",
         "csignal": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "bit": "cpp",
+        "random": "cpp",
+        "variant": "cpp"
     },
     "spellright.language": [
         "English (American)",
@@ -76,6 +79,7 @@
         "plaintext",
         "cpp",
         "xml",
-        "shellscript"
+        "shellscript",
+        "makefile"
     ]
 }

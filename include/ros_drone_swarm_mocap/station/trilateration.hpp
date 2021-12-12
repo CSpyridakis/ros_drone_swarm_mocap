@@ -4,25 +4,21 @@
 #include <ros/ros.h>
 #include <iostream>
 
-typedef struct coordinates{
-    double x;
-    double y;
-    double z;
-} Point;
+#include "pose.h"
 
-typedef struct ancdata{
-    Point anchorLocation;
-    double objectsDistance;
-} AnchorData;
+typedef struct anchor_data{
+    Point pose;                 // Anchor's pose (position + orientation)
+    double objectsDistance;     // Detected object's distance 
+} anchor_data;
 
-typedef enum trilateration_return_values{
-    SUCCESS,
+typedef enum trilateration_return_value{
+    SUCCESS = 0,
     NOT_ENOUGH_ANCHORS
-} trilRet;
+} trilatRet;
 
 /**
  * 
  */
-trilRet trilateration(std::vector<AnchorData> anchors, Point objectLocation);
+trilatRet trilateration(const std::vector<anchor_data> anchors, Point &objectsPose);
 
 #endif //TRILATERATION_HPP
