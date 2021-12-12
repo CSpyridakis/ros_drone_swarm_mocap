@@ -1,6 +1,8 @@
 #include <ros/ros.h>
+#include <ros/package.h>
 #include <opencv2/core.hpp>
 #include <iostream>
+#include <fstream>
 
 // Messages
 #include "ros_drone_swarm_mocap/mocap_worker_data.h"
@@ -24,12 +26,20 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     cv::Mat houghImg = img.clone();
 
 #if DETECTION_MODE == MODE_COLOR_DETECTION
+#ifdef DEBUG_FUNCTIONS
+    D_TIME(hsvDetection(hsvImg, circles), "hsvDetection ");
+#else
     hsvDetection(hsvImg, circles);
+#endif
     fixMatForImageTransfer(hsvImg);
     imgProcDebug = hsvImg.clone();
     // combineImages(hsvImg, cv::Mat(0,0,CV_8UC3), imgTmp);
 #elif DETECTION_MODE == MODE_SHAPE_DETECTION
+#ifdef DEBUG_FUNCTIONS
+    D_TIME(houghDetection(houghImg, circles), "houghDetection ");
+#else
     houghDetection(houghImg, circles);
+#endif
     // combineImages(houghImg, cv::Mat(0,0,CV_8UC3), imgTmp);
     imgProcDebug = houghImg.clone();
 #endif
@@ -45,6 +55,11 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     // combineImages(imgTmp, img, imgOut);
     // combineImages(imgTmp, cv::Mat(0,0,CV_8UC3), imgOut);
     imgOut = imgProcDebug.clone();
+#ifdef DEBUG_FUNCTIONS
+    SAVE_FRAME(imgOut);
+    D_CPU();
+    D_RAM();
+#endif
 }
 
 

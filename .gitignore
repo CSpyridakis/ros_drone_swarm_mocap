@@ -1,2 +1,5 @@
 html/
 bags/*.bag
+test/experiments/*.txt
+test/experiments/images
+test/experiments/images/*

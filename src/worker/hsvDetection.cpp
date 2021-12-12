@@ -47,6 +47,7 @@ void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
     circles.push_back(circle);
 
 // ----------------------------------------------------------------------------------------------------------
+#ifdef DEBUG_IMAGE_PRINTS
     // See bitwise image
     if(mask.type() == CV_8UC1){
         std::vector<cv::Mat> copies{mask, mask, mask};  
@@ -57,6 +58,7 @@ void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
     copyImageTo(img, hsvImg, "HSV colorspace", 10, 10, 0.3);
     copyImageTo(img, mask, "Mask", mask.cols, 10, 0.3);
     copyImageTo(img, bitwise_mask, "Bitwise Mask", mask.cols + 10 + bitwise_mask.cols + 10, 10, 0.3);
+#endif
     // // Resize bitwise mask
 
     // calculateSensorSize(2*radius);

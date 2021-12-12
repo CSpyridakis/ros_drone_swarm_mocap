@@ -20,6 +20,7 @@
 #include "worker/houghDetection.hpp"
 #include "worker/hsvDetection.hpp"
 
+#include "worker/misc.hpp"
 
 image_transport::Publisher processedImage;
 ros::Publisher processedData;
@@ -120,6 +121,8 @@ int main(int argc, char **argv){
     ros::Subscriber hue_sub = n.subscribe("/node/" + std::to_string(nodeID) + "/hsv_params", 5, updateHSVvaluesCallback); 
     ros::Subscriber hough_sub = n.subscribe("/node/" + std::to_string(nodeID) + "/hough_params",5, updateHoughvaluesCallback);
 #endif
+
+    D_INIT()
 
     ros::spin();
     return 0;
