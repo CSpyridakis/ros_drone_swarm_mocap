@@ -71,6 +71,8 @@ add_message_files(
   mocap_worker_data.msg
   hough_values.msg
   hsv_values.msg
+  obj_pose.msg
+  camera_params.msg
 #   Message1.msg
 #   Message2.msg
 )
@@ -229,6 +231,7 @@ include
 # catkin_add_nosetests(test)
 
 include_directories(include/${PROJECT_NAME})
+include_directories(lib)
 
 # ---------------------------------------------------------------------------------------------
 #                                  Create a new executable node
@@ -242,6 +245,7 @@ set(
   src/worker/hsvDetection.cpp
   src/worker/houghDetection.cpp
   src/worker/misc.cpp
+  lib/distance-angle/distance-angle.cpp
 )
 
 # Let them as is

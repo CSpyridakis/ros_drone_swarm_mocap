@@ -1,12 +1,5 @@
 time timestamp
 int8 nodeID
-uint16 imageHeightInPixels
-uint16 imageWidthInPixels
-float32 XfocalLengthInMillimeters
-float32 YfocalLengthInMillimeters
-float32 XFieldOfViewInAngles
-float32 YFieldOfViewInAngles
-float32 objectsRealSizeInMeter       
-float32 XsensorSizeInMillimeters
-float32 YsensorSizeInMillimeters
+obj_pose pose
+camera_params camera
 detected_ball_data[] balls

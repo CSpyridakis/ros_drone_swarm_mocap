@@ -3,9 +3,12 @@
 #include <string> 
 
 // Messages
-#include "ros_drone_swarm_mocap/mocap_worker_data.h"
 #include "sensor_msgs/Image.h"
 #include "sensor_msgs/CameraInfo.h"
+
+#include "ros_drone_swarm_mocap/mocap_worker_data.h"
+#include "ros_drone_swarm_mocap/camera_params.h"
+#include "ros_drone_swarm_mocap/obj_pose.h"
 
 // Opencv and image transport
 #include <opencv2/opencv.hpp>
@@ -71,6 +74,7 @@ int main(int argc, char **argv){
     float objRealSize = 0.0;
     float XsensorSizeInMillimeter = 0.0;
     float YsensorSizeInMillimeter = 0.0;
+    float node_x = 0.0, node_y = 0.0, node_z = 0.0, node_roll = 0.0, node_pitch = 0.0, node_yaw = 0.0; 
     try{
         n.getParam("nodeID", nodeID);
         n.getParam("ballRealSizeInMeter", objRealSize);
@@ -83,15 +87,23 @@ int main(int argc, char **argv){
     }
     procData.nodeID = nodeID;
     sensor_msgs::CameraInfo::ConstPtr camera_parameters = ros::topic::waitForMessage<sensor_msgs::CameraInfo>("/usb_cam_" + std::to_string(nodeID) + "/camera_info", n);
-    procData.imageHeightInPixels = camera_parameters->height;
-    procData.imageWidthInPixels = camera_parameters->width;
-    procData.XfocalLengthInMillimeters = camera_parameters->P[0];
-    procData.YfocalLengthInMillimeters = camera_parameters->P[5];
-    procData.XFieldOfViewInAngles = 2 * atan((float)procData.imageWidthInPixels  / (2 * (float)procData.XfocalLengthInMillimeters)) * 180.0 / CV_PI ;
-    procData.YFieldOfViewInAngles = 2 * atan((float)procData.imageHeightInPixels / (2 * (float)procData.YfocalLengthInMillimeters)) * 180.0 / CV_PI ;
-    procData.objectsRealSizeInMeter = objRealSize;
-    procData.XsensorSizeInMillimeters = XsensorSizeInMillimeter;
-    procData.YsensorSizeInMillimeters = YsensorSizeInMillimeter;
+    procData.camera.imageHeightInPixels = camera_parameters->height;
+    procData.camera.imageWidthInPixels = camera_parameters->width;
+    procData.camera.XfocalLengthInMillimeters = camera_parameters->P[0];
+    procData.camera.YfocalLengthInMillimeters = camera_parameters->P[5];
+    procData.camera.XFieldOfViewInAngles = 2 * atan((float)procData.camera.imageWidthInPixels  / (2 * (float)procData.camera.XfocalLengthInMillimeters)) * 180.0 / CV_PI ;
+    procData.camera.YFieldOfViewInAngles = 2 * atan((float)procData.camera.imageHeightInPixels / (2 * (float)procData.camera.YfocalLengthInMillimeters)) * 180.0 / CV_PI ;
+    procData.camera.objectsRealSizeInMeter = objRealSize;
+    procData.camera.XsensorSizeInMillimeters = XsensorSizeInMillimeter;
+    procData.camera.YsensorSizeInMillimeters = YsensorSizeInMillimeter;
+
+    // Sensor's init positions
+    procData.pose.x = node_x;
+    procData.pose.y = node_y;
+    procData.pose.z = node_z;
+    procData.pose.roll = node_roll;
+    procData.pose.pitch = node_pitch;
+    procData.pose.yaw = node_yaw;
 
     // Create topics names
     std::string subImageTopic = "/usb_cam_" + std::to_string(nodeID) + "/image_color";

@@ -1,38 +1,25 @@
 #include "worker/misc.hpp"
+#include "distance-angle/distance-angle.hpp"
 
-float calculateAngle(int fov, int pixelLenght, int NthPixel, bool yaxis = false){
-    float angle = (float)( (std::abs( (float)pixelLenght/2 - NthPixel) * fov ) / pixelLenght);  ///< Calculate angle
+float calculateSensorSize(  int objectSizeInPixels, 
+                            float objectsDistanceFromCameraInMeters, 
+                            ros_drone_swarm_mocap::mocap_worker_data& procData){
 
-    if (yaxis) return (float)(NthPixel >= pixelLenght/2 ) ? -angle : angle  ;       // Calculate sign (for y axis ymiddle < 0 -> positive angles)
-    return (float)(NthPixel >= pixelLenght/2 ) ? angle : -angle  ;                  // Calculate sign (for x axis xmiddle < 0 -> negative angles)
+    return calculateSensorsSizeFull(procData.camera.XfocalLengthInMillimeters, 
+                                    procData.camera.objectsRealSizeInMeter, 
+                                    procData.camera.imageWidthInPixels,
+                                    objectSizeInPixels, 
+                                    objectsDistanceFromCameraInMeters);
 }
 
-float calculateSensorsSizeFull(float focalLengthInMillimeter, float objectsRealSizeInMeter, 
-                            int imageSizeInPixels, int objectsSizeInPixels, float objectsDistanceFromCameraInMeters){
-    
-    // ROS_INFO("\nfocalLengthInMillimeter: %f  \nobjectsRealSizeInMeter: %f \nimageSizeInPixels: %d \nobjectsSizeInPixels: %d \nobjectsDistanceFromCameraInMeters:%f\n", focalLengthInMillimeter, objectsRealSizeInMeter, imageSizeInPixels, objectsSizeInPixels, objectsDistanceFromCameraInMeters);
+float calculateDistanceWithDataStruct(  int objectSizeInPixels, 
+                                        ros_drone_swarm_mocap::mocap_worker_data& procData){
 
-    return (float)( (focalLengthInMillimeter * objectsRealSizeInMeter * (float)imageSizeInPixels) / ((float)objectsSizeInPixels * objectsDistanceFromCameraInMeters) );
-}
-
-float calculateSensorSize(int objectSizeInPixels, float objectsDistanceFromCameraInMeters, 
-                        ros_drone_swarm_mocap::mocap_worker_data& procData){
-    return calculateSensorsSizeFull(procData.XfocalLengthInMillimeters, procData.objectsRealSizeInMeter, procData.imageWidthInPixels,
-                            objectSizeInPixels, objectsDistanceFromCameraInMeters);
-}
-
-float calculateDistanceFull(float focalLengthInMillimeter, float objectsRealSizeInMeter, 
-                            int imageSizeInPixels, int objectsSizeInPixels, float sensorSizeInMillileter ){
-
-    // ROS_INFO("\nfocalLengthInMillimeter: %f  \nobjectsRealSizeInMeter: %f \nimageSizeInPixels: %d \nobjectsSizeInPixels: %d \nsensorSizeInMillimeter:%f\n", focalLengthInMillimeter, objectsRealSizeInMeter, imageSizeInPixels, objectsSizeInPixels, sensorSizeInMillileter);
-
-    return (float)( (focalLengthInMillimeter * objectsRealSizeInMeter * (float)imageSizeInPixels) / ((float)objectsSizeInPixels * sensorSizeInMillileter) );
-}
-
-
-float calculateDistanceWithDataStruct(int objectSizeInPixels, ros_drone_swarm_mocap::mocap_worker_data& procData){
-    return calculateDistanceFull(procData.XfocalLengthInMillimeters, procData.objectsRealSizeInMeter, 
-                                    procData.imageWidthInPixels, objectSizeInPixels, procData.XsensorSizeInMillimeters);
+    return calculateDistanceFull(   procData.camera.XfocalLengthInMillimeters, 
+                                    procData.camera.objectsRealSizeInMeter, 
+                                    procData.camera.imageWidthInPixels, 
+                                    objectSizeInPixels, 
+                                    procData.camera.XsensorSizeInMillimeters);
 }
 
 void fixMatForImageTransfer(cv::Mat &img){
@@ -49,9 +36,10 @@ void saveDistancesToProcData(std::vector<cv::Vec3f> circles, ros_drone_swarm_moc
         bd.image_plane_y = circles[k][1];
         bd.image_plane_r = circles[k][2];
         bd.distance_from_camera = calculateDistanceWithDataStruct(2*bd.image_plane_r, procData);
-        bd.xangle = calculateAngle(procData.XFieldOfViewInAngles, procData.imageWidthInPixels, bd.image_plane_x);
-        bd.yangle = calculateAngle(procData.YFieldOfViewInAngles, procData.imageHeightInPixels, bd.image_plane_y, true);
-        // ROS_INFO("Circle - %d Center: (%d, %d) | Distance: %f | Angle x: %f | Angle y: %f", k,  bd.image_plane_x, bd.image_plane_y,  bd.distance_from_camera,  bd.xangle, bd.yangle);
+        bd.xangle = calcucateAngleX(procData.camera.XFieldOfViewInAngles, procData.camera.imageWidthInPixels, bd.image_plane_x);
+        bd.yangle = calcucateAngleY(procData.camera.YFieldOfViewInAngles, procData.camera.imageHeightInPixels, bd.image_plane_y);
+        // ROS_INFO("Circle - %d Center: (%d, %d) | Distance: %f | Angle x: %f | Angle y: %f", k,  
+                    //  bd.image_plane_x, bd.image_plane_y,  bd.distance_from_camera,  bd.xangle, bd.yangle);
         // ROS_INFO("Sensorsize: %f\n", calculateSensorSize(2*bd.image_plane_r, 1.0, procData));
     }
     procData.balls.push_back(bd);
