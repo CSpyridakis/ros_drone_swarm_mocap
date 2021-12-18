@@ -59,6 +59,7 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     SAVE_FRAME(imgOut);
     D_CPU();
     D_RAM();
+    D_TEMP();
 #endif
 }
 

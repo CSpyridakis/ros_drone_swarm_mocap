@@ -22,12 +22,21 @@ static std::string fpower = test_dir + "power.txt";
 static std::string ftime = test_dir + "time.txt";
 static std::string fdist = test_dir + "distance.txt";
 static std::string fangles = test_dir + "angles.txt";
+static std::string ftemp = test_dir + "temp.txt";
 
 static std::string dimages = test_dir + "images/";
 static ros::Time initTime;
 static struct sysinfo system_info;
 static int frameCounter;
 #define FRAMES_BETWEEN_SAVES 10
+
+// #define CPU_USAGE_SH    "P=`grep ^proc /proc/cpuinfo | wc -l` ; \ 
+//                         F=`cat /proc/stat | awk '/^cpu / {print $5}'` ; \
+//                         sleep 1 ; \
+//                         L=`cat /proc/stat | awk '/^cpu / {print $5}'` ; \
+//                         U=`echo 2 k 100 $L - `"
+
+#define GET_TEMP    "$(sensors | grep 'C' | grep 'temp\\|Tctl\\|Package' | head -n 2 | grep -o -E '[0-9][0-9].[0-9].C'| tr '\\n' ' ' | tr -s ' ' | cut -d' ' -f1 | head -c -3 | grep -o -E '[0-9][0-9].[0-9]')" 
 
 #define D_INIT() {  initTime = ros::Time::now(); frameCounter = 0; \
                     std::ofstream myfile1(ftime);   myfile1.close(); \
@@ -36,6 +45,7 @@ static int frameCounter;
                     std::ofstream myfile4(fdist);   myfile4.close();\
                     std::ofstream myfile5(fangles); myfile5.close(); \
                     std::ofstream myfile6(fpower);  myfile6.close();\
+                    std::ofstream myfile7(ftemp);   myfile7.close();\
                     system((scripts_dir + "createTestFiles.sh").c_str()); } 
 
 #define D_TIME(f, text) { std::ofstream myfile(ftime, std::ios_base::app); \
@@ -58,6 +68,9 @@ static int frameCounter;
 #define D_POWER() { std::ofstream myfile(fpower, std::ios_base::app); \
                 myfile << (ros::Time::now()) << " : " << n << " -x: " << x << " y: " << y << std::endl; \
                 myfile.close();}
+
+#define D_TEMP() { std::string command = "echo \"" + std::to_string(ros::Time::now().toSec()) + " : " + GET_TEMP + "\" >> " + ftemp; \
+                    system(command.c_str());}
 
 #define D_DISTANCE(n, distance) { std::ofstream myfile(fdist, std::ios_base::app); \
                                     myfile << (ros::Time::now()) << " : " << n << " - " << distance << std::endl; \
