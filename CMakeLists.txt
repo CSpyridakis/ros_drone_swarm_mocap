@@ -246,6 +246,7 @@ set(
   src/worker/houghDetection.cpp
   src/worker/misc.cpp
   lib/distance-angle/distance-angle.cpp
+  lib/statistics/performance.cpp
 )
 
 # Let them as is

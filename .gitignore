@@ -1,5 +1,5 @@
 html/
 bags/*.bag
-test/experiments/*.txt
+test/experiments/*.csv
 test/experiments/images
 test/experiments/images/*

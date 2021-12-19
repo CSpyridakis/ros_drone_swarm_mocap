@@ -22,6 +22,8 @@
 
 #include "worker/misc.hpp"
 
+#include "statistics/performance.hpp"
+
 image_transport::Publisher processedImage;
 ros::Publisher processedData;
 ros_drone_swarm_mocap::mocap_worker_data procData;
@@ -122,7 +124,7 @@ int main(int argc, char **argv){
     ros::Subscriber hough_sub = n.subscribe("/node/" + std::to_string(nodeID) + "/hough_params",5, updateHoughvaluesCallback);
 #endif
 
-    D_INIT()
+    D_INIT();
 
     ros::spin();
     return 0;

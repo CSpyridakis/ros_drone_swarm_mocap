@@ -14,6 +14,7 @@
 #include "worker/drawInfoToImage.hpp"
 #include "worker/houghDetection.hpp"
 #include "worker/hsvDetection.hpp"
+#include "statistics/performance.hpp"
 
 void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap_worker_data& procData){
     procData.balls.clear();
@@ -25,9 +26,11 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     cv::Mat hsvImg = img.clone();
     cv::Mat houghImg = img.clone();
 
+    double time_now = ros::Time::now().toSec();
+
 #if DETECTION_MODE == MODE_COLOR_DETECTION
 #ifdef DEBUG_FUNCTIONS
-    D_TIME(hsvDetection(hsvImg, circles), "hsvDetection ");
+    D_TIME(time_now, hsvDetection(hsvImg, circles), "hsvDetection");
 #else
     hsvDetection(hsvImg, circles);
 #endif
@@ -36,7 +39,7 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     // combineImages(hsvImg, cv::Mat(0,0,CV_8UC3), imgTmp);
 #elif DETECTION_MODE == MODE_SHAPE_DETECTION
 #ifdef DEBUG_FUNCTIONS
-    D_TIME(houghDetection(houghImg, circles), "houghDetection ");
+    D_TIME(time_now, houghDetection(houghImg, circles), "houghDetection");
 #else
     houghDetection(houghImg, circles);
 #endif
@@ -56,10 +59,11 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     // combineImages(imgTmp, cv::Mat(0,0,CV_8UC3), imgOut);
     imgOut = imgProcDebug.clone();
 #ifdef DEBUG_FUNCTIONS
-    SAVE_FRAME(imgOut);
-    D_CPU();
-    D_RAM();
-    D_TEMP();
+    SAVE_FRAME(time_now, imgOut);
+    D_CPU(time_now);
+    D_RAM(time_now);
+    D_TEMP(time_now);
+    D_NET(time_now, "enp24s0");     //TODO you may need to change this interface
 #endif
 }
 

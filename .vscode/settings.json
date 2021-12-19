@@ -67,7 +67,8 @@
         "bit": "cpp",
         "random": "cpp",
         "variant": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "codecvt": "cpp"
     },
     "spellright.language": [
         "English (American)",

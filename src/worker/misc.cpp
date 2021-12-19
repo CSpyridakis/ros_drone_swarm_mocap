@@ -1,5 +1,6 @@
 #include "worker/misc.hpp"
 #include "distance-angle/distance-angle.hpp"
+#include "statistics/performance.hpp"
 
 float calculateSensorSize(  int objectSizeInPixels, 
                             float objectsDistanceFromCameraInMeters, 
@@ -42,7 +43,7 @@ void saveDistancesToProcData(std::vector<cv::Vec3f> circles, ros_drone_swarm_moc
                     //  bd.image_plane_x, bd.image_plane_y,  bd.distance_from_camera,  bd.xangle, bd.yangle);
         // ROS_INFO("Sensorsize: %f\n", calculateSensorSize(2*bd.image_plane_r, 1.0, procData));
 #ifdef DEBUG_FUNCTIONS
-        DEBUG_DA(k, bd.distance_from_camera, bd.xangle, bd.yangle);
+        DEBUG_DA(ros::Time::now().toSec(), k, bd.distance_from_camera, bd.xangle, bd.yangle);
 #endif
     }
     procData.balls.push_back(bd);
