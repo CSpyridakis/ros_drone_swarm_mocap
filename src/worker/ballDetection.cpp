@@ -58,12 +58,13 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     // combineImages(imgTmp, img, imgOut);
     // combineImages(imgTmp, cv::Mat(0,0,CV_8UC3), imgOut);
     imgOut = imgProcDebug.clone();
-#ifdef DEBUG_FUNCTIONS
+#ifdef DEBUG_SAVE_HW_PERFORMANCE_TO_FILES
     SAVE_FRAME(time_now, imgOut);
     D_CPU(time_now);
     D_RAM(time_now);
     D_TEMP(time_now);
-    D_NET(time_now, "enp24s0");     //TODO you may need to change this interface
+    D_NET(time_now, "enp24s0");     //FIXME: you may need to change this interface
+                                    //IMPORTANT: This produces error if not set properly!
 #endif
 }
 

@@ -28,7 +28,7 @@ void updateHSVvaluesCallback(const ros_drone_swarm_mocap::hsv_values::ConstPtr& 
 }
 
 void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
-    cv::Mat mask, bitwise_mask, hsvImg, tmpImg = img.clone();
+    cv::Mat mask, bitwise_mask, hsvImg, tmpImg = img.clone(), initImg = img.clone();
     cv::GaussianBlur(tmpImg, tmpImg, cv::Size(gaussian_kernel_size, gaussian_kernel_size), 5, 0);
     cv::cvtColor(tmpImg, hsvImg, cv::COLOR_BGR2HSV);
     cv::inRange(hsvImg, cv::Scalar(minH, minS, minV), cv::Scalar(maxH, maxS, maxV), mask);
@@ -48,17 +48,27 @@ void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
     circles.push_back(circle);
 
 // ----------------------------------------------------------------------------------------------------------
-#ifdef DEBUG_IMAGE_PRINTS
+#ifdef DEBUG_DISPLAY_TO_FRAME_INTERNAL_FRAMES
     // See bitwise image
     if(mask.type() == CV_8UC1){
         std::vector<cv::Mat> copies{mask, mask, mask};  
         cv::merge(copies,mask);
     }
     cv::bitwise_and(img, mask, bitwise_mask);
-    
-    copyImageTo(img, hsvImg, "HSV colorspace", 10, 10, 0.3);
-    copyImageTo(img, mask, "Mask", mask.cols + 200, 10, 0.3);
-    copyImageTo(img, bitwise_mask, "Bitwise Mask", img.cols - (10 + bitwise_mask.cols*0.3), 10, 0.3);
+    float picScale = 0.24;
+    int bottom = img.rows - hsvImg.rows*picScale - 10;
+    copyImageTo(img, hsvImg, "HSV colorspace", 10, bottom, picScale);
+    copyImageTo(img, mask, "Mask", 327, bottom, picScale);
+    copyImageTo(img, bitwise_mask, "Bitwise Mask", 644, bottom, picScale);
+
+#ifdef DEBUG_DISPLAY_TO_FRAME_HISTOGRAM
+    cv::Mat rgbHistogram, hsvHistogram;
+    getHistogram(initImg, rgbHistogram);
+    getHistogram(hsvImg, hsvHistogram);
+
+    copyImageTo(img, rgbHistogram, "RGB Histogram", 961, bottom, picScale);
+    copyImageTo(img, hsvHistogram, "HSV Histogram", 961, 354, picScale);
+#endif
 #endif
     // // Resize bitwise mask
 

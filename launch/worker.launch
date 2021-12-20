@@ -12,8 +12,8 @@
     <arg name="device" value="Desktop" />
     
     <!-- Available resolutions 1920 x 1080, 1280 x 720 and 640 x 480  -->
-    <arg name="w_res" value="1920" />
-    <arg name="h_res" value="1080" />
+    <arg name="w_res" value="1280" />
+    <arg name="h_res" value="720" />
     <arg name="sel_camera" value="0"/>
 
     <!-- For Testing_node the rosbag file to play -->

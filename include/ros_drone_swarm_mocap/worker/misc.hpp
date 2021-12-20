@@ -10,8 +10,13 @@
 #include "ros_drone_swarm_mocap/mocap_worker_data.h"
 #include "ros_drone_swarm_mocap/detected_ball_data.h"
 
-#define DEBUG_FUNCTIONS
-#define DEBUG_IMAGE_PRINTS
+#define DEBUG_ALL
+#ifdef DEBUG_ALL
+    #define DEBUG_EXTR_DATA_TO_FILE
+    #define DEBUG_SAVE_HW_PERFORMANCE_TO_FILES
+    #define DEBUG_DISPLAY_TO_FRAME_INTERNAL_FRAMES
+    #define DEBUG_DISPLAY_TO_FRAME_HISTOGRAM
+#endif
 
 /**
  * 
@@ -82,5 +87,8 @@ void combineImages(cv::Mat img1, cv::Mat img2, cv::Mat &outimage);
 
 
 void copyImageTo(cv::Mat &img, const cv::Mat toCopyImg, const std::string text, const int left_offset, const int bottom_offset, const float scale);
+
+
+void getHistogram(const cv::Mat img, cv::Mat &histogram);
 
 #endif //MISC_HPP

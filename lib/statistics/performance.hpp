@@ -5,7 +5,6 @@
 #include <sys/sysinfo.h>
 #include <iostream>
 #include <ctime>
-#include <ros/ros.h>
 
 #ifdef __GNUC__
 #define VARIABLE_IS_NOT_USED __attribute__ ((unused))
@@ -33,7 +32,7 @@ typedef struct file_info{
 
 // TODO: you may need to change these filesnames
 const static file_info f[] = {
-    {"durations.csv", "time,duration"},
+    {"durations.csv", "time,function,duration"},
     {"cpu.csv", "time,usage"},
     {"ram.csv", "time,used,free"},
     {"power.csv", "time,power"},
@@ -47,9 +46,9 @@ const static file_info f[] = {
 // =============================================================================================
 //                                   SAVE FRAMES FROM VIDEO
 // =============================================================================================
-// FIXME: This is not used to the generic performace lib
+// FIXME: This is not used to the generic performance lib
 VARIABLE_IS_NOT_USED static int frameCounter;
-#define FRAMES_BETWEEN_SAVES 10     // TODO: Maybe you need to change this MACRO
+#define FRAMES_BETWEEN_SAVES 30     // TODO: Maybe you need to change this MACRO
 static std::string dimages = test_dir + "images/";                     /* The file to be saved */
 
 #define SAVE_FRAME(eventMoment, frame){ \
@@ -129,9 +128,9 @@ typedef struct net_stat{
 static net_stat prevNet;
 long double networkRead(std::string interface, std::string rt_x);
 
-static void get_net_stat(net_stat &stats, std::string interface){
-    double netnowUp = networkRead(interface, "tx"); 
-    double netnowDown = networkRead(interface, "rx");  
+VARIABLE_IS_NOT_USED static void get_net_stat(net_stat &stats, std::string interface){
+    double netnowUp = networkRead(interface.c_str(), "tx"); 
+    double netnowDown = networkRead(interface.c_str(), "rx");  
     stats.up = netnowUp - prevNet.up;
     stats.down = netnowDown -  prevNet.down;
     prevNet.up = netnowUp;
@@ -216,12 +215,9 @@ VARIABLE_IS_NOT_USED static std::string get_filenames(){
     std::string command = scripts_dir + "createTestFiles.sh " + get_filenames(); \
     system(command.c_str()); \
     read_cpu_stats(preStats); \
-    ROS_INFO("Experiment files to create: %d", file_info_size); \
     std::ofstream myfile; \
     for(int i=0; i<file_info_size; i++){ \
-        ROS_INFO("- Filename: [%s], fileheader: [%s]", f[i].name.c_str(), f[i].fileheader.c_str()); \
         myfile.open(f[i].name, std::ios_base::app); \
-        if(myfile.fail()) ROS_INFO("Cannot open: %s", f[i].name.c_str()); \
         myfile << f[i].fileheader.c_str() << std::endl; \
         myfile.close(); \
     } \
