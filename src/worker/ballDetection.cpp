@@ -51,7 +51,7 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     saveDistancesToProcData(circles, procData);
 
 #ifdef DEBUG
-    cameraPrintInfo(imgProcDebug, procData);
+    cameraPrintInfoprocData(imgProcDebug, procData);
     drawCircles(imgProcDebug, imgProcDebug, procData);
     // combineImages(imgProcDebug, imgTmp, imgTmp);
 #endif

@@ -6,9 +6,10 @@ set(CATKIN_POS ${HOME})
 
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
-include_directories( /opt/ros/${ROS_DISTRO}/include )
-include_directories( ${CATKIN_POS}/${CATKIN_WS}/devel/include/ )
 include_directories( ../../include/${PROJECT_NAME} )
+include_directories( ../../lib/ )
+
+add_definitions(-DTESTING_FILE)
 
 # =================== Change these options ===================
 set(EXEC_NAME OUT)

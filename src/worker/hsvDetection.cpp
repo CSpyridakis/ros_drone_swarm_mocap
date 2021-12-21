@@ -11,6 +11,7 @@ static int maxS = 120;
 static int maxV = 255;
 static int di_er_kernel = 1;
 
+#ifndef OUTSIDE_ROS_ENV
 void updateHSVvaluesCallback(const ros_drone_swarm_mocap::hsv_values::ConstPtr& msg){
     if (msg->id == 1 || msg->id == ALL_NODES ){  //TODO: change 
         // if input gaussian kernel size is possitive and 
@@ -26,6 +27,7 @@ void updateHSVvaluesCallback(const ros_drone_swarm_mocap::hsv_values::ConstPtr& 
         ROS_INFO("Got new HSV values Min(%d, %d, %d), Max(%d, %d, %d) | di_er_kernel: %d, gaussian_kernel_size: %d", minH, minS, minV, maxH, maxS, maxV, di_er_kernel, gaussian_kernel_size);
     }
 }
+#endif
 
 void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
     cv::Mat mask, bitwise_mask, hsvImg, tmpImg = img.clone(), initImg = img.clone();

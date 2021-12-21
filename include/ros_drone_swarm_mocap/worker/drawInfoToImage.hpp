@@ -1,18 +1,21 @@
 #ifndef DRAW_INFO_TO_IMAGE_HPP
 #define DRAW_INFO_TO_IMAGE_HPP
 
+#include "worker/misc.hpp"
+#ifndef OUTSIDE_ROS_ENV
 #include <ros/ros.h>
-#include <opencv2/opencv.hpp>
 #include "ros_drone_swarm_mocap/mocap_worker_data.h"
 #include "ros_drone_swarm_mocap/detected_ball_data.h"
+#endif
+
+#include <opencv2/opencv.hpp>
 
 /**
  * \brief
  * \param img
- * \param procData
- * \param circles 
+ * 
 */
-void cameraPrintInfo(cv::Mat &img, const ros_drone_swarm_mocap::mocap_worker_data& procData){
+void cameraPrintInfo(cv::Mat &img, int id){
     cv::Scalar greenColor(0, 255, 0);
     cv::Scalar redColor(0, 0, 255);
     cv::Scalar blueColor(255, 0, 0);
@@ -31,9 +34,21 @@ void cameraPrintInfo(cv::Mat &img, const ros_drone_swarm_mocap::mocap_worker_dat
     std::string resTxt = "Resolution: [" + std::to_string(img.cols) + "x" + std::to_string(img.rows) + "]";
     cv::putText(img, resTxt, cv::Point(50, 50), cv::FONT_HERSHEY_DUPLEX, 1, greenColor, 1);
 
-    resTxt = "Node Id: [" + std::to_string(procData.nodeID) + "]";
+    resTxt = "Node Id: [" + std::to_string(id) + "]";
     cv::putText(img, resTxt, cv::Point(50, 85), cv::FONT_HERSHEY_DUPLEX, 1, greenColor, 1);
 }
+
+/**
+ * \brief
+ * \param img
+ * \param procData
+ * \param circles 
+*/
+#ifndef OUTSIDE_ROS_ENV
+void cameraPrintInfoprocData(cv::Mat &img, const ros_drone_swarm_mocap::mocap_worker_data& procData){
+    cameraPrintInfo(img, procData.nodeID);
+}
+#endif
 
 /**
  * \brief 
@@ -42,6 +57,7 @@ void cameraPrintInfo(cv::Mat &img, const ros_drone_swarm_mocap::mocap_worker_dat
  * \param outing
  * \param procData
  */
+#ifndef OUTSIDE_ROS_ENV
 void drawCircles(cv::Mat img, cv::Mat& outimg, const ros_drone_swarm_mocap::mocap_worker_data procData){
     outimg = img.clone();
     for( uint k = 0; k < procData.balls.size(); k++){
@@ -71,5 +87,6 @@ void drawCircles(cv::Mat img, cv::Mat& outimg, const ros_drone_swarm_mocap::moca
         cv::putText(outimg, textAy, cv::Point(x-r, y-r-10), cv::FONT_HERSHEY_DUPLEX, 0.7, redColor, 1);
     }
 }
+#endif
 
 #endif //DRAW_INFO_TO_IMAGE_HPP
