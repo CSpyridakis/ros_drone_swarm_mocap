@@ -65,9 +65,9 @@ void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
     cv::Mat rgbHistogram, hsvHistogram;
     getHistogram(initImg, rgbHistogram);
     getHistogram(hsvImg, hsvHistogram);
-
-    copyImageTo(img, rgbHistogram, "RGB Histogram", 961, bottom, picScale);
-    copyImageTo(img, hsvHistogram, "HSV Histogram", 961, 354, picScale);
+    
+    copyImageTo(img, rgbHistogram, "RGB Histogram", 1014, 10, picScale);
+    copyImageTo(img, hsvHistogram, "HSV Histogram", 1147, 10, picScale);
 #endif
 #endif
     // // Resize bitwise mask

@@ -103,7 +103,7 @@ void getHistogram(const cv::Mat img, cv::Mat &histogram){
     cv::calcHist(&channels[_G], 1, 0, cv::Mat(), hist[_G], 1, &histSize, &histRange, uniform, accumulate);
     cv::calcHist(&channels[_R], 1, 0, cv::Mat(), hist[_R], 1, &histSize, &histRange, uniform, accumulate);
 
-    int hist_w = img.cols, hist_h = img.rows;
+    int hist_w = 512, hist_h = 400;
     int bin_w = cvRound((double) hist_w/histSize );
     cv::Mat histImage(hist_h, hist_w, CV_8UC3, cv::Scalar(0,0,0));
 

@@ -12,7 +12,7 @@
 #define VARIABLE_IS_NOT_USED
 #endif
 
-static std::string project_dir = "/home/cs-du/catkin_ws/src/ros_drone_swarm_mocap/"; // TODO: change it
+static std::string project_dir = "/home/ubuntu/catkin_ws/src/ros_drone_swarm_mocap/"; // TODO: change it
 static std::string test_dir = project_dir + "test/experiments/";
 static std::string scripts_dir = project_dir + "scripts/";
 

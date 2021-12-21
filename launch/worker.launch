@@ -9,7 +9,7 @@
     <arg name="nodeID" value="1" />
 
     <!-- Available options: Desktop | Raspberry | Testing_node -->
-    <arg name="device" value="Desktop" />
+    <arg name="device" value="Raspberry" />
     
     <!-- Available resolutions 1920 x 1080, 1280 x 720 and 640 x 480  -->
     <arg name="w_res" value="1280" />
