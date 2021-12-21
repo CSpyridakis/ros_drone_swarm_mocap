@@ -26,14 +26,10 @@ float calcucateAngleX(int fov, int pixelLenght, int NthPixel);
 
 float calcucateAngleY(int fov, int pixelLenght, int NthPixel);
 
-
-
-
 /**
  */
 float calculateSensorsSizeFull(float focalLengthInMillimeter, float objectsRealSizeInMeter, 
                             int imageSizeInPixels, int objectsSizeInPixels, float objectsDistanceFromCameraInMeters);
-
 
 /**
  * \brief

@@ -10,6 +10,7 @@
 
 // Detection
 #include "worker/misc.hpp"
+#include "worker/extendDIstAng.hpp"
 #include "worker/ballDetection.hpp"
 #include "worker/drawInfoToImage.hpp"
 #include "worker/houghDetection.hpp"

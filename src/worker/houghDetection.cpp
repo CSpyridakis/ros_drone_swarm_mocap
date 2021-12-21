@@ -1,5 +1,6 @@
 #include "worker/houghDetection.hpp"
 #include "worker/misc.hpp"
+#define ALL_NODES 0
 
 static int accumulator_resolution = 2;
 static int median_blur = 5;
@@ -9,7 +10,7 @@ static int canny_high_threshold = 120;
 static int threshold_for_center_detection = 100;  
 
 void updateHoughvaluesCallback(const ros_drone_swarm_mocap::hough_values::ConstPtr& msg){
-    if(msg->id == 1){   //TODO: change
+    if(msg->id == 1 || msg->id == ALL_NODES){   //TODO: change
         accumulator_resolution = msg->acc_res;
 
         median_blur = msg->median_blur;
