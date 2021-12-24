@@ -8,8 +8,8 @@ find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 include_directories( ../../include/${PROJECT_NAME} )
 include_directories( ../../lib/ )
-
-add_definitions(-DTESTING_FILE)
+include_directories( ../../../../devel/include/ )
+include_directories( /opt/ros/noetic/include )
 
 # =================== Change these options ===================
 set(EXEC_NAME OUT)
@@ -17,6 +17,9 @@ set(FilesToInclude
 	main.cpp
 	../../src/worker/misc.cpp
 	../../src/worker/hsvDetection.cpp
+	../../src/worker/extendDistAng.cpp
+	../../lib/distance-angle/distance-angle.cpp
+	../../lib/statistics/performance.cpp
 )
 add_executable(${EXEC_NAME} ${FilesToInclude})
 target_link_libraries( ${EXEC_NAME} ${OpenCV_LIBS} )

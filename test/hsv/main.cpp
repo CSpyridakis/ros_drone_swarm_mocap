@@ -1,6 +1,11 @@
+/**
+ * IMPORTANT! You have to have all ROS_INFO commented out to use this code!
+*/
 
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include "worker/extendDIstAng.hpp"
+#include "ros_drone_swarm_mocap/mocap_worker_data.h"
 #include "worker/hsvDetection.hpp"
 #include "worker/drawInfoToImage.hpp"
 
@@ -12,7 +17,11 @@ cv::Mat distCoef = cv::Mat(1, 5, CV_32F, distCoeffsCalibrationdata);
 
 // =========================================================================
 float objRealSize_m =  0.144;
-float sensorsize_mm = 755.875793;
+float xsensorsize_mm = 755.875793;
+float ysensorsize_mm = 755.875793;
+
+#define IMAGE_W 1280
+#define IMAGE_H 720
 
 int main(int argc, char** argv ){
     std::string videoName = "0";
@@ -21,10 +30,23 @@ int main(int argc, char** argv ){
         videoNum = atoi(argv[1]);
     } 
 
-    float xfocalLengthin_mm = cameraCalibrationdata[0];
-    float yfocalLengthin_mm = cameraCalibrationdata[4];
-    int xFOVAngles;
-    int yFOVAngles;
+    ros_drone_swarm_mocap::mocap_worker_data procData;
+    procData.nodeID = 1;
+    procData.camera.imageHeightInPixels = IMAGE_H;
+    procData.camera.imageWidthInPixels =IMAGE_W;
+    procData.camera.XfocalLengthInMillimeters = cameraCalibrationdata[0];
+    procData.camera.YfocalLengthInMillimeters = cameraCalibrationdata[4];
+    procData.camera.XFieldOfViewInAngles = 2 * atan((float)procData.camera.imageWidthInPixels  / (2 * (float)procData.camera.XfocalLengthInMillimeters)) * 180.0 / CV_PI ;
+    procData.camera.YFieldOfViewInAngles = 2 * atan((float)procData.camera.imageHeightInPixels / (2 * (float)procData.camera.YfocalLengthInMillimeters)) * 180.0 / CV_PI ;
+    procData.camera.objectsRealSizeInMeter = objRealSize_m;
+    procData.camera.XsensorSizeInMillimeters = xsensorsize_mm;
+    procData.camera.YsensorSizeInMillimeters = ysensorsize_mm;
+    // procData.pose.x = node_x;
+    // procData.pose.y = node_y;
+    // procData.pose.z = node_z;
+    // procData.pose.roll = node_roll;
+    // procData.pose.pitch = node_pitch;
+    // procData.pose.yaw = node_yaw;
     
     // int codec = cv::VideoWriter::fourcc('M', 'J', 'P', 'G');
     // cv::VideoWriter out(videoName + "-proc-hsv.avi", codec, 30, cv::Size(1280, 720), true);
@@ -34,17 +56,13 @@ int main(int argc, char** argv ){
     if(videoName == "0"){
         cap.open(0, cv::CAP_V4L2);
         cap.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));      // More fps less resolution (at least for my setup)
-        cap.set(cv::CAP_PROP_FRAME_WIDTH, 1280);
-        cap.set(cv::CAP_PROP_FRAME_HEIGHT, 720);
+        cap.set(cv::CAP_PROP_FRAME_WIDTH, IMAGE_W);
+        cap.set(cv::CAP_PROP_FRAME_HEIGHT, IMAGE_H);
         cap.set(cv::CAP_PROP_FPS, 30);
         int dWidth = cap.get(cv::CAP_PROP_FRAME_WIDTH); 
         int dHeight = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
         int fps_counter = cap.get(cv::CAP_PROP_FPS);
         printf("After set, actual resolution of the video w:%d h:%d fps:%d\n", dWidth, dHeight, fps_counter); 
-
-        xFOVAngles = 2 * atan((float)dWidth  / (2 * (float)xfocalLengthin_mm)) * 180.0 / 3.14159265358979323846;
-        yFOVAngles = 2 * atan((float)dHeight / (2 * (float)yfocalLengthin_mm)) * 180.0 / 3.14159265358979323846;
-        printf("xFOVangles: %d  yFOVangles: %d\n", xFOVAngles, yFOVAngles);
     }
     else
         cap.open(videoName);
@@ -53,6 +71,7 @@ int main(int argc, char** argv ){
     cv::Mat img, Unimg, tmpImg, outImg;
     bool playvideo = true;
     while(true){
+        procData.balls.clear();
         if (playvideo && !cap.read(img)){printf("Input has disconnected\n"); break;}
         cv::undistort(img, Unimg, camCalib, distCoef);
         // cv::imshow("Undistorted", Unimg);
@@ -60,9 +79,9 @@ int main(int argc, char** argv ){
 
         std::vector<cv::Vec3f> circles;
         hsvDetection(tmpImg, circles);
-        
+        saveDistancesToProcData(circles, procData);
         cameraPrintInfo(tmpImg, 1);
-        // drawCircles(imgProcDebug, imgProcDebug, procData);
+        drawCircles(tmpImg, tmpImg, procData);
 
         cv::imshow("Out Image", tmpImg); 
         char key = cv::waitKey(1); 

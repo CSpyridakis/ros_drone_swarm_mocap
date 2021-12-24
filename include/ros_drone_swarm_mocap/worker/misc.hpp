@@ -11,10 +11,6 @@
     #define DEBUG_DISPLAY_TO_FRAME_HISTOGRAM
 #endif
 
-#ifdef TESTING_FILE
-#define OUTSIDE_ROS_ENV  //TODO: ONLY FOR TESTING DIR
-#endif
-
 /**
  * \brief ROS image transfer needs CV_8UC3 to display image in web server, so fix Mat in other case
  * 

@@ -1,14 +1,11 @@
 #ifndef DRAW_INFO_TO_IMAGE_HPP
 #define DRAW_INFO_TO_IMAGE_HPP
 
-#include "worker/misc.hpp"
-#ifndef OUTSIDE_ROS_ENV
 #include <ros/ros.h>
+#include <opencv2/opencv.hpp>
+#include "worker/misc.hpp"
 #include "ros_drone_swarm_mocap/mocap_worker_data.h"
 #include "ros_drone_swarm_mocap/detected_ball_data.h"
-#endif
-
-#include <opencv2/opencv.hpp>
 
 /**
  * \brief
@@ -57,7 +54,6 @@ void cameraPrintInfoprocData(cv::Mat &img, const ros_drone_swarm_mocap::mocap_wo
  * \param outing
  * \param procData
  */
-#ifndef OUTSIDE_ROS_ENV
 void drawCircles(cv::Mat img, cv::Mat& outimg, const ros_drone_swarm_mocap::mocap_worker_data procData){
     outimg = img.clone();
     for( uint k = 0; k < procData.balls.size(); k++){
@@ -87,6 +83,5 @@ void drawCircles(cv::Mat img, cv::Mat& outimg, const ros_drone_swarm_mocap::moca
         cv::putText(outimg, textAy, cv::Point(x-r, y-r-10), cv::FONT_HERSHEY_DUPLEX, 0.7, redColor, 1);
     }
 }
-#endif
 
 #endif //DRAW_INFO_TO_IMAGE_HPP

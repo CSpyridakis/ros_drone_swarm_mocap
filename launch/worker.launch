@@ -138,9 +138,9 @@
 
 
 
-     <group if="$(eval arg('device') == 'Testing_node')">
+    <group if="$(eval arg('device') == 'Testing_node')">
         <node name="testing_node_$(arg nodeID)" pkg="rosbag" type="play" args="--clock $(find ros_drone_swarm_mocap)/bags/$(arg bagfile).bag"/>
-     </group>
+    </group>
 
 
 </launch>
