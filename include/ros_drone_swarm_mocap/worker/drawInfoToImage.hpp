@@ -6,6 +6,7 @@
 #include "worker/misc.hpp"
 #include "ros_drone_swarm_mocap/mocap_worker_data.h"
 #include "ros_drone_swarm_mocap/detected_ball_data.h"
+#include "statistics/performance.hpp"
 
 /**
  * \brief
@@ -33,6 +34,24 @@ void cameraPrintInfo(cv::Mat &img, int id){
 
     resTxt = "Node Id: [" + std::to_string(id) + "]";
     cv::putText(img, resTxt, cv::Point(50, 85), cv::FONT_HERSHEY_DUPLEX, 1, greenColor, 1);
+
+    cpu_usage cu;
+    get_cpu_usage(cu);
+    resTxt = "CPU: " + to_string_with_precision(cu.used*100,1) + "%";
+    cv::putText(img, resTxt, cv::Point(50, 110), cv::FONT_HERSHEY_DUPLEX, 0.5, redColor, 0.5);
+
+    ram_usage ru = get_ram_usage();
+    float ru_used_gb = ru.used/(1024*1024*1024);
+    float ru_total_gb = ru.total/(1024*1024*1024);
+    resTxt = "Ram: " + to_string_with_precision(ru_used_gb,2) + "GB / " + to_string_with_precision(ru_total_gb,2) + "GB";
+    cv::putText(img, resTxt, cv::Point(50, 130), cv::FONT_HERSHEY_DUPLEX, 0.5, redColor, 0.5);
+
+    // net_usage nu = get_net_usage();  
+    // float nu_up_mb = nu.up/(8*1024*1024);
+    // float nu_down_mb = nu.down/(8*1024*1024);
+    // resTxt = "Net: U: " + to_string_with_precision(nu_up_mb,3) + "Mb / D:" + to_string_with_precision(nu_down_mb,3) + "MB";
+    // cv::putText(img, resTxt, cv::Point(50, 150), cv::FONT_HERSHEY_DUPLEX, 0.5, redColor, 0.5);
+
 }
 
 /**

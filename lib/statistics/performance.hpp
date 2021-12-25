@@ -5,16 +5,25 @@
 #include <sys/sysinfo.h>
 #include <iostream>
 #include <ctime>
+#include <cstring>
+#include <time.h>
+#include <stdlib.h>
 
 #ifdef __GNUC__
 #define VARIABLE_IS_NOT_USED __attribute__ ((unused))
 #else
 #define VARIABLE_IS_NOT_USED
 #endif
+static int rnadnum = 0;
 
-static std::string project_dir = "/home/ubuntu/catkin_ws/src/ros_drone_swarm_mocap/"; // TODO: change it
-static std::string test_dir = project_dir + "test/experiments/";
-static std::string scripts_dir = project_dir + "scripts/";
+// TODO: you may need to change it
+#define PROJECT_DIR "/home/ubuntu/catkin_ws/src/ros_drone_swarm_mocap/" 
+#define TEST_DIR PROJECT_DIR "test/experiments/"
+#define SCRIPTS_DIR PROJECT_DIR "scripts/"
+
+//FIXME: you may need to change this interface
+//IMPORTANT: This produces error if not set properly!
+#define NET_INTERFACE "wlan0"
 
 typedef struct file_info{
     std::string name;
@@ -26,7 +35,7 @@ typedef struct file_info{
 #define _ram 2
 #define _power 3 
 #define _temp 4
-#define _distance 5 
+#define _mdist 5 
 #define _angle 6
 #define _net 7
 
@@ -43,13 +52,15 @@ const static file_info f[] = {
 };
 #define file_info_size (int)(sizeof(f)/sizeof(file_info)) 
 
+std::string to_string_with_precision(float value, const int n);
+
 // =============================================================================================
 //                                   SAVE FRAMES FROM VIDEO
 // =============================================================================================
 // FIXME: This is not used to the generic performance lib
 VARIABLE_IS_NOT_USED static int frameCounter;
 #define FRAMES_BETWEEN_SAVES 30     // TODO: Maybe you need to change this MACRO
-static std::string dimages = test_dir + "images/";                     /* The file to be saved */
+static std::string dimages = std::string(TEST_DIR) + "images/";                     /* The file to be saved */
 
 #define SAVE_FRAME(eventMoment, frame){ \
     std::string filename = dimages + std::to_string(eventMoment) + ".png"; \
@@ -61,7 +72,7 @@ static std::string dimages = test_dir + "images/";                     /* The fi
 //                                   CALCULATE TIME OF FUNCTION EXECUTION
 // =============================================================================================
   
-const static std::string ftime = test_dir + f[_durations].name;         /* The file to be saved */
+const static std::string ftime = std::string(TEST_DIR) + f[_durations].name;         /* The file to be saved */
 #define D_TIME(eventMoment, function, text) { \
     std::ofstream myfile(ftime, std::ios_base::app); \
     const std::clock_t beforeTime = clock(); \
@@ -75,7 +86,7 @@ const static std::string ftime = test_dir + f[_durations].name;         /* The f
 //                                            CPU USAGE
 // =============================================================================================
 
-static std::string fcpu = test_dir + f[_cpu].name;                       /* The file to be saved */
+static std::string fcpu = std::string(TEST_DIR) + f[_cpu].name;                       /* The file to be saved */
 
 typedef struct cpu_stat{
     long double user;
@@ -88,17 +99,22 @@ typedef struct cpu_stat{
     long double steal;
 }cpu_stat;
 void read_cpu_stats(cpu_stat &stats);
-double cpu_usage(cpu_stat &prev_stats, cpu_stat &now_stats);
-    
-VARIABLE_IS_NOT_USED static cpu_stat preStats = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-VARIABLE_IS_NOT_USED static cpu_stat nowStats;
+double cpu_usage_get(cpu_stat &prev_stats, cpu_stat &now_stats);
+
+typedef struct cpu_usage{
+    long double used;
+}cpu_usage;
+void get_cpu_usage(cpu_usage &cu);
+
+VARIABLE_IS_NOT_USED static cpu_stat preStatsD = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+VARIABLE_IS_NOT_USED static cpu_stat nowStatsD;
 
 #define D_CPU(eventMoment) { \
     std::ofstream myfile(fcpu, std::ios_base::app); \
-    read_cpu_stats(nowStats); \
-    float cpuUsage = cpu_usage(preStats, nowStats); \
+    read_cpu_stats(nowStatsD); \
+    float cpuUsage = cpu_usage_get(preStatsD, nowStatsD); \
     myfile << std::to_string(eventMoment) << "," << cpuUsage << std::endl; \
-    memcpy(&preStats, &nowStats, sizeof(cpu_stat)); \
+    memcpy(&preStatsD, &nowStatsD, sizeof(cpu_stat)); \
     myfile.close(); \
 }
 
@@ -106,44 +122,46 @@ VARIABLE_IS_NOT_USED static cpu_stat nowStats;
 //                                             RAM USAGE
 // =============================================================================================
 
-static std::string fram = test_dir + f[_ram].name;                       /* The file to be saved */
+static std::string fram = std::string(TEST_DIR) + f[_ram].name;                       /* The file to be saved */
+typedef struct ram_usage{
+    long double used;
+    long double free;
+    long double total;
+}ram_usage;
+
+ram_usage get_ram_usage();
+
 #define D_RAM(eventMoment) { \
-    static struct sysinfo system_info; \
     std::ofstream myfile(fram, std::ios_base::app); \
-    sysinfo(&system_info); \
-    myfile << std::to_string(eventMoment) << "," << (system_info.totalram - system_info.freeram) << "," << system_info.totalram << std::endl; \
+    ram_usage ru = get_ram_usage(); \
+    myfile << std::to_string(eventMoment) << "," << ru.used << "," << ru.total << std::endl; \
     myfile.close(); \
 }
 
 // =============================================================================================
 //                                             NETWORK
 // =============================================================================================
-static std::string fnet = test_dir + f[_net].name;
+static std::string fnet = std::string(TEST_DIR) + f[_net].name;
 
-typedef struct net_stat{
+typedef struct net_usage{
     long double down;
     long double up;
     std::clock_t last_read;
-}net_stat;
-static net_stat prevNet;
+}net_usage;
+static net_usage prevNetD;
+
 long double networkRead(std::string interface, std::string rt_x);
 
-VARIABLE_IS_NOT_USED static void get_net_stat(net_stat &stats, std::string interface){
-    double netnowUp = networkRead(interface.c_str(), "tx"); 
-    double netnowDown = networkRead(interface.c_str(), "rx");  
-    stats.up = netnowUp - prevNet.up;
-    stats.down = netnowDown -  prevNet.down;
-    prevNet.up = netnowUp;
-    prevNet.down = netnowDown;
-    prevNet.last_read = clock();
-}
+void get_net_stat(net_usage &stats);
 
-#define D_NET(eventMoment, interface){ \
-    double timeFromLast = (clock() - prevNet.last_read) / (double) CLOCKS_PER_SEC; \
+net_usage get_net_usage();
+
+#define D_NET(eventMoment){ \
+    double timeFromLast = (clock() - prevNetD.last_read) / (double) CLOCKS_PER_SEC; \
     std::ofstream myfile(fnet, std::ios_base::app); \
     if(timeFromLast >= 1.0){ \
-        net_stat nowNet; \
-        get_net_stat(nowNet, interface); \
+        net_usage nowNet; \
+        get_net_stat(nowNet); \
         myfile << std::to_string(eventMoment) << "," << std::to_string(nowNet.up) << "," << std::to_string(nowNet.down) << std::endl; \
     } else myfile << std::to_string(eventMoment) << "," << std::to_string(0.0) << "," << std::to_string(0.0) << std::endl; \
     myfile.close(); \
@@ -154,7 +172,7 @@ VARIABLE_IS_NOT_USED static void get_net_stat(net_stat &stats, std::string inter
 // =============================================================================================
 
 // TODO: 
-static std::string fpower = test_dir + f[_power].name;                 /* The file to be saved */
+static std::string fpower = std::string(TEST_DIR) + f[_power].name;                 /* The file to be saved */
 #define D_POWER(eventMoment) { \
     std::ofstream myfile(fpower, std::ios_base::app); \
     myfile << std::to_string(eventMoment) << "," << n << "," << x << "," << y << std::endl; \
@@ -165,7 +183,7 @@ static std::string fpower = test_dir + f[_power].name;                 /* The fi
 //                                          TEMPERATURE
 // =============================================================================================
 
-static std::string ftemp = test_dir + f[_temp].name;                   /* The file to be saved */
+static std::string ftemp = std::string(TEST_DIR) + f[_temp].name;                   /* The file to be saved */
 
 #define GET_TEMP    "$(sensors | grep 'C' | grep 'temp\\|Tctl\\|Package' | " \
                     "head -n 2 | grep -o -E '[0-9][0-9].[0-9].C'| tr '\\n' ' ' | " \
@@ -180,14 +198,14 @@ static std::string ftemp = test_dir + f[_temp].name;                   /* The fi
 //                                      DISTANCE + ANGLE
 // =============================================================================================
 
-static std::string fdist = test_dir + f[_distance].name;              /* The file to be saved */
+static std::string fdist = std::string(TEST_DIR) + f[_mdist].name;  /* The file to be saved */
 #define D_DISTANCE(eventMoment, n, distance) { \
     std::ofstream myfile(fdist, std::ios_base::app); \
     myfile << std::to_string(eventMoment) << "," << n << "," << distance << std::endl; \
     myfile.close(); \
 }
 
-static std::string fangles = test_dir + f[_angle].name;
+static std::string fangles = std::string(TEST_DIR) + f[_angle].name;
 #define D_ANGLES(eventMoment, n, x, y) { \
     std::ofstream myfile(fangles, std::ios_base::app); \
     myfile << std::to_string(eventMoment) << "," << n << "," << x << "," << y << std::endl; \
@@ -211,10 +229,12 @@ VARIABLE_IS_NOT_USED static std::string get_filenames(){
 }
 
 #define D_INIT() {  \
+    srand(time(NULL)); \
+    rnadnum = rand(); \
     frameCounter = 0; \
-    std::string command = scripts_dir + "createTestFiles.sh " + get_filenames(); \
+    std::string command = std::string(SCRIPTS_DIR) + "createTestFiles.sh " + get_filenames(); \
     system(command.c_str()); \
-    read_cpu_stats(preStats); \
+    read_cpu_stats(preStatsD); \
     std::ofstream myfile; \
     for(int i=0; i<file_info_size; i++){ \
         myfile.open(f[i].name, std::ios_base::app); \

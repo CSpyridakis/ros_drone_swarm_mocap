@@ -64,8 +64,7 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     D_CPU(time_now);
     D_RAM(time_now);
     D_TEMP(time_now);
-    D_NET(time_now, "wlan0");     //FIXME: you may need to change this interface
-                                    //IMPORTANT: This produces error if not set properly!
+    D_NET(time_now);                        
 #endif
 }
 

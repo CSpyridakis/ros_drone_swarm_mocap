@@ -11,6 +11,8 @@ include_directories( ../../lib/ )
 include_directories( ../../../../devel/include/ )
 include_directories( /opt/ros/noetic/include )
 
+add_definitions(-DTESTING_FILES)
+
 # =================== Change these options ===================
 set(EXEC_NAME OUT)
 set(FilesToInclude 

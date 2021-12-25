@@ -2,6 +2,8 @@
  * IMPORTANT! You have to have all ROS_INFO commented out to use this code!
 */
 
+#include <time.h>
+#include <stdlib.h>
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include "worker/extendDIstAng.hpp"
@@ -29,6 +31,7 @@ int main(int argc, char** argv ){
     if (argc == 2) {
         videoNum = atoi(argv[1]);
     } 
+    srand(time(NULL));
 
     ros_drone_swarm_mocap::mocap_worker_data procData;
     procData.nodeID = 1;
@@ -48,8 +51,9 @@ int main(int argc, char** argv ){
     // procData.pose.pitch = node_pitch;
     // procData.pose.yaw = node_yaw;
     
-    // int codec = cv::VideoWriter::fourcc('M', 'J', 'P', 'G');
-    // cv::VideoWriter out(videoName + "-proc-hsv.avi", codec, 30, cv::Size(1280, 720), true);
+    int codec = cv::VideoWriter::fourcc('M', 'J', 'P', 'G');
+    std::string vidNa = std::to_string(rand());
+    cv::VideoWriter out("../videos/" + vidNa + "-proc-hsv.avi", codec, 30, cv::Size(1280, 720), true);
 
     // Open Video
     cv::VideoCapture cap;
@@ -83,12 +87,14 @@ int main(int argc, char** argv ){
         cameraPrintInfo(tmpImg, 1);
         drawCircles(tmpImg, tmpImg, procData);
 
-        cv::imshow("Out Image", tmpImg); 
+        out << tmpImg;
+
+        // cv::imshow("Out Image", tmpImg); 
         char key = cv::waitKey(1); 
         if ( key == 27){ printf("Esc key is pressed by user. Exit!\n"); break;}
         if ( key == 'p' ) {playvideo = !playvideo;}
     }
-    // out.release();
+    out.release();
     
     return 0;
 }
