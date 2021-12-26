@@ -5,6 +5,9 @@
 #include <time.h>
 #include <stdlib.h>
 #include <iostream>
+#include <ctime>
+#include <cstring>
+#include <fstream>
 #include <opencv2/opencv.hpp>
 #include "worker/extendDIstAng.hpp"
 #include "ros_drone_swarm_mocap/mocap_worker_data.h"
@@ -53,6 +56,7 @@ int main(int argc, char** argv ){
     
     int codec = cv::VideoWriter::fourcc('M', 'J', 'P', 'G');
     std::string vidNa = std::to_string(rand());
+    cv::VideoWriter out1("../videos/" + vidNa + "-proc-hsv-clean.avi", codec, 30, cv::Size(1280, 720), true);
     cv::VideoWriter out("../videos/" + vidNa + "-proc-hsv.avi", codec, 30, cv::Size(1280, 720), true);
 
     // Open Video
@@ -74,6 +78,10 @@ int main(int argc, char** argv ){
     
     cv::Mat img, Unimg, tmpImg, outImg;
     bool playvideo = true;
+    std::string filename = "../videos/" + vidNa + ".csv";
+    std::ofstream myfile(filename, std::ios_base::app);
+    myfile << "time,dist,xangle,yangle" << std::endl; 
+    const std::clock_t beforeTime = clock();
     while(true){
         procData.balls.clear();
         if (playvideo && !cap.read(img)){printf("Input has disconnected\n"); break;}
@@ -88,6 +96,8 @@ int main(int argc, char** argv ){
         drawCircles(tmpImg, tmpImg, procData);
 
         out << tmpImg;
+        out1 << Unimg;
+        myfile << std::to_string((clock() - beforeTime) / (double) CLOCKS_PER_SEC) << "," << procData.balls[0].distance_from_camera << "," << procData.balls[0].xangle << "," << procData.balls[0].yangle << std::endl;
 
         // cv::imshow("Out Image", tmpImg); 
         char key = cv::waitKey(1); 
@@ -95,6 +105,8 @@ int main(int argc, char** argv ){
         if ( key == 'p' ) {playvideo = !playvideo;}
     }
     out.release();
+    out1.release();
+    myfile.close();
     
     return 0;
 }
