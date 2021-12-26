@@ -3,3 +3,4 @@ bags/*.bag
 test/experiments/*.csv
 test/experiments/images
 test/experiments/images/*
+test/experiments-*/

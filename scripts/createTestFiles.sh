@@ -6,6 +6,9 @@ images_dir="images/"
 
 files="$@"
 
+random=$(($RANDOM*$RANDOM*$RANDOM*$RANDOM*$RANDOM))
+cp -r ${experi_dir} ${experi_dir%?}-${random}/
+
 cd ${experi_dir}
 rm -rf ${files}
 rm -rf ${images_dir}

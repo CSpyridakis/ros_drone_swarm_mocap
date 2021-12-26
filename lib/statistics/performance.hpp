@@ -16,14 +16,25 @@
 #endif
 static int rnadnum = 0;
 
+// TODO: Maybe comment out 
+#define RASPBERRY
+
 // TODO: you may need to change it
+#ifndef RASPBERRY
+#define PROJECT_DIR "/home/cs-du/catkin_ws/src/ros_drone_swarm_mocap/" 
+#else
 #define PROJECT_DIR "/home/ubuntu/catkin_ws/src/ros_drone_swarm_mocap/" 
+#endif
 #define TEST_DIR PROJECT_DIR "test/experiments/"
 #define SCRIPTS_DIR PROJECT_DIR "scripts/"
 
 //FIXME: you may need to change this interface
 //IMPORTANT: This produces error if not set properly!
+#ifndef RASPBERRY
+#define NET_INTERFACE "enp24s0"
+#else
 #define NET_INTERFACE "wlan0"
+#endif
 
 typedef struct file_info{
     std::string name;
@@ -185,9 +196,11 @@ static std::string fpower = std::string(TEST_DIR) + f[_power].name;             
 
 static std::string ftemp = std::string(TEST_DIR) + f[_temp].name;                   /* The file to be saved */
 
-#define GET_TEMP    "$(sensors | grep 'C' | grep 'temp\\|Tctl\\|Package' | " \
-                    "head -n 2 | grep -o -E '[0-9][0-9].[0-9].C'| tr '\\n' ' ' | " \
-                    "tr -s ' ' | cut -d' ' -f1 | head -c -3 | grep -o -E '[0-9][0-9].[0-9]')" 
+// #define GET_TEMP    "$(sensors | grep 'C' | grep 'temp\\|Tctl\\|Package' | " \
+//                     "head -n 2 | grep -o -E '[0-9][0-9].[0-9].C'| tr '\\n' ' ' | " \
+//                     "tr -s ' ' | cut -d' ' -f1 | head -c -3 | grep -o -E '[0-9][0-9].[0-9]')" 
+
+#define GET_TEMP "$(sensors | grep 'C' | grep 'temp\\|Tctl\\|Package' | tr '\n' ' ' | tr -s ' ' | cut -d' ' -f2 | head -c 5 | tail -c 4)"
 
 #define D_TEMP(eventMoment) { \
     std::string command = "echo \"" + std::to_string(eventMoment) + "," + GET_TEMP + "\" >> " + ftemp; \
