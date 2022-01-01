@@ -9,10 +9,13 @@
 #include <cstring>
 #include <fstream>
 #include <opencv2/opencv.hpp>
-#include "worker/extendDIstAng.hpp"
+#include "worker/extendDistAng.hpp"
 #include "ros_drone_swarm_mocap/mocap_worker_data.h"
 #include "worker/hsvDetection.hpp"
 #include "worker/drawInfoToImage.hpp"
+
+// #define RECORD
+#define VIEW
 
 // For undistortion 1280,720
 static float cameraCalibrationdata[9] = {9.113812935295416e+02, 0.651033616843436, 6.644831723997970e+02, 0, 9.113086377881884e+02, 3.713670194501918e+02,  0, 0, 1};
@@ -21,15 +24,15 @@ cv::Mat camCalib = cv::Mat(3, 3, CV_32F, cameraCalibrationdata);
 cv::Mat distCoef = cv::Mat(1, 5, CV_32F, distCoeffsCalibrationdata);
 
 // =========================================================================
-float objRealSize_m =  0.144;
-float xsensorsize_mm = 755.875793;
-float ysensorsize_mm = 755.875793;
+float objRealSize_m =  0.144;   // TODO: You may need to change this value
+float xsensorsize_mm = 1354.724121;
+float ysensorsize_mm = 1354.724121;
 
 #define IMAGE_W 1280
 #define IMAGE_H 720
 
 int main(int argc, char** argv ){
-    std::string videoName = "0";
+    std::string videoName = "../videos/t1.avi";
     int videoNum = -1;
     if (argc == 2) {
         videoNum = atoi(argv[1]);
@@ -53,13 +56,27 @@ int main(int argc, char** argv ){
     // procData.pose.roll = node_roll;
     // procData.pose.pitch = node_pitch;
     // procData.pose.yaw = node_yaw;
-    
+
+#ifdef RECORD    
     int codec = cv::VideoWriter::fourcc('M', 'J', 'P', 'G');
     std::string vidNa = std::to_string(rand());
     cv::VideoWriter out1("../videos/" + vidNa + "-proc-hsv-clean.avi", codec, 30, cv::Size(1280, 720), true);
     cv::VideoWriter out("../videos/" + vidNa + "-proc-hsv.avi", codec, 30, cv::Size(1280, 720), true);
+    std::string filename = "../videos/" + vidNa + ".csv";
+    std::ofstream myfile(filename, std::ios_base::app);
+    myfile << "time,dist,xangle,yangle" << std::endl; 
+#endif
 
+#ifdef VIEW
+    createTrackers();
+    setupTrackers(5,26,56,123,255,103,255,1);     // 5,26,56,123,255,103,255,1
+#endif
+
+    cv::Mat img, Unimg, tmpImg, outImg;
+    bool playvideo = true;
+    
     // Open Video
+    repeatPoint:
     cv::VideoCapture cap;
     if(videoName == "0"){
         cap.open(0, cv::CAP_V4L2);
@@ -76,13 +93,11 @@ int main(int argc, char** argv ){
         cap.open(videoName);
     if (!cap.isOpened()){ printf("Cannot open camera\n"); return -1;} 
     
-    cv::Mat img, Unimg, tmpImg, outImg;
-    bool playvideo = true;
-    std::string filename = "../videos/" + vidNa + ".csv";
-    std::ofstream myfile(filename, std::ios_base::app);
-    myfile << "time,dist,xangle,yangle" << std::endl; 
     const std::clock_t beforeTime = clock();
     while(true){
+#ifdef VIEW
+        fixTrackers();
+#endif
         procData.balls.clear();
         if (playvideo && !cap.read(img)){printf("Input has disconnected\n"); break;}
         cv::undistort(img, Unimg, camCalib, distCoef);
@@ -91,22 +106,32 @@ int main(int argc, char** argv ){
 
         std::vector<cv::Vec3f> circles;
         hsvDetection(tmpImg, circles);
+        fixCenterRadius(circles);
         saveDistancesToProcData(circles, procData);
         cameraPrintInfo(tmpImg, 1);
         drawCircles(tmpImg, tmpImg, procData);
-
+        
+#ifdef RECORD
+        myfile << std::to_string((clock() - beforeTime) / (double) CLOCKS_PER_SEC) << "," << procData.balls[0].distance_from_camera << "," << procData.balls[0].xangle << "," << procData.balls[0].yangle << std::endl;
         out << tmpImg;
         out1 << Unimg;
-        myfile << std::to_string((clock() - beforeTime) / (double) CLOCKS_PER_SEC) << "," << procData.balls[0].distance_from_camera << "," << procData.balls[0].xangle << "," << procData.balls[0].yangle << std::endl;
+#endif
 
-        // cv::imshow("Out Image", tmpImg); 
-        char key = cv::waitKey(1); 
-        if ( key == 27){ printf("Esc key is pressed by user. Exit!\n"); break;}
+#ifdef VIEW
+        cv::imshow("Out Image", tmpImg); 
+#endif
+        char key = cv::waitKey(30); 
+        if ( key == 27){ printf("Esc key is pressed by user. Exit!\n"); goto exitPoint;}
         if ( key == 'p' ) {playvideo = !playvideo;}
     }
+#ifndef RECORD
+    goto repeatPoint;
+#endif
+    exitPoint:
+#ifdef RECORD
     out.release();
     out1.release();
     myfile.close();
-    
+#endif
     return 0;
 }

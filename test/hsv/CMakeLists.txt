@@ -11,7 +11,7 @@ include_directories( ../../lib/ )
 include_directories( ../../../../devel/include/ )
 include_directories( /opt/ros/noetic/include )
 
-add_definitions(-DTESTING_FILES)
+add_definitions(-DTESTING_HSV)
 
 # =================== Change these options ===================
 set(EXEC_NAME OUT)

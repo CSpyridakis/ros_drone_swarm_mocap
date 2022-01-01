@@ -10,12 +10,13 @@
 
 // Detection
 #include "worker/misc.hpp"
-#include "worker/extendDIstAng.hpp"
+#include "worker/extendDistAng.hpp"
 #include "worker/ballDetection.hpp"
 #include "worker/drawInfoToImage.hpp"
 #include "worker/houghDetection.hpp"
 #include "worker/hsvDetection.hpp"
 #include "statistics/performance.hpp"
+
 
 void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap_worker_data& procData){
     procData.balls.clear();
@@ -48,6 +49,7 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     imgProcDebug = houghImg.clone();
 #endif
 
+    fixCenterRadius(circles);
     saveDistancesToProcData(circles, procData);
 
 #ifdef DEBUG

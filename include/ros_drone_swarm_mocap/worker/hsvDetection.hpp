@@ -6,6 +6,12 @@
 #include "ros_drone_swarm_mocap/hsv_values.h"
 #include "worker/misc.hpp"
 
+#ifdef TESTING_HSV
+void fixTrackers();
+void createTrackers();
+void setupTrackers(int gau, int iH, int xH, int nS, int xS, int nV, int xV, int dir);
+#endif
+
 /**
  * \brief 
  * 

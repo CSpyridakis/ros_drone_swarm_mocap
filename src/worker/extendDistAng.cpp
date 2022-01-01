@@ -1,6 +1,6 @@
 #include <opencv2/core/fast_math.hpp>
 
-#include "worker/extendDIstAng.hpp"
+#include "worker/extendDistAng.hpp"
 #include "distance-angle/distance-angle.hpp"
 #include "statistics/performance.hpp"
 #include "worker/misc.hpp"
@@ -39,10 +39,30 @@ void saveDistancesToProcData(std::vector<cv::Vec3f> circles, ros_drone_swarm_moc
                     //  bd.image_plane_x, bd.image_plane_y,  bd.distance_from_camera,  bd.xangle, bd.yangle);
         // ROS_INFO("Sensorsize: %f\n", calculateSensorSize(2*bd.image_plane_r, 1.0, procData));
 #ifdef DEBUG_EXTR_DATA_TO_FILE
-#ifndef TESTING_FILES
+#ifndef TESTING_HSV
         DEBUG_DA(ros::Time::now().toSec(), k, bd.distance_from_camera, bd.xangle, bd.yangle);
 #endif
 #endif
     }
     procData.balls.push_back(bd);
+}
+
+void fixCenterRadius(std::vector<cv::Vec3f> &circles){
+    static std::vector<cv::Vec3f> circles_buf;
+    // Due to noise, for long ranges (short radius circles) increase diameter size
+    // to improve range estimation  
+    for(int i=0; i<circles.size();i++){
+        if (circles[i][2] < 100){
+            circles[i][2] = circles[i][2]*1.1; 
+        }
+        else if (circles[i][2] < 50){
+            circles[i][2] = circles[i][2]*1.15; 
+        }
+        else if (circles[i][2] < 30){
+            circles[i][2] = circles[i][2]*1.2; 
+        }
+        else if (circles[i][2] < 15){
+            circles[i][2] = circles[i][2]*1.3; 
+        }
+    }
 }

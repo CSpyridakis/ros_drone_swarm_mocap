@@ -12,6 +12,7 @@ timeD = Data(:,1); initTime = timeD(1); timeD = timeD - initTime;
 cpuD = Data(:,2);
 
 cpuD = cpuD * 100;
+cpuAve = sum(cpuD)/length(cpuD) * ones(length(cpuD), 1);
 
 f1 = figure();
 plot(timeD, cpuD);
