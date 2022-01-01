@@ -4,3 +4,4 @@ test/experiments/*.csv
 test/experiments/images
 test/experiments/images/*
 test/experiments-*/
+!test/experiments-raspberry/

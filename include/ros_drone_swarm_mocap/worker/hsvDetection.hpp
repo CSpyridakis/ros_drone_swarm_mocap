@@ -10,6 +10,7 @@
 void fixTrackers();
 void createTrackers();
 void setupTrackers(int gau, int iH, int xH, int nS, int xS, int nV, int xV, int dir);
+void setupTrackersValues(int gau, int iH, int xH, int nS, int xS, int nV, int xV, int dir);
 #endif
 
 /**

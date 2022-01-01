@@ -45,6 +45,17 @@ void setupTrackers(int gau, int iH, int xH, int nS, int xS, int nV, int xV, int 
     cv::setTrackbarPos( "maxV", "trackbars", xV); 
     cv::setTrackbarPos( "di_er_kernel", "trackbars", dir); 
 }
+
+void setupTrackersValues(int gau, int iH, int xH, int nS, int xS, int nV, int xV, int dir){
+    gaussian_kernel_size = gau;
+    minH = iH;
+    minS = nS;
+    minV = nV;
+    maxH = xH;
+    maxS = xS;
+    maxV = xV;
+    di_er_kernel = dir;
+}
 #endif
 
 void updateHSVvaluesCallback(const ros_drone_swarm_mocap::hsv_values::ConstPtr& msg){
@@ -77,42 +88,46 @@ void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
     cv::findNonZero(mask,Points);
     cv::Rect ballBound = boundingRect(Points);
 
-    cntImg = mask.clone();
-    std::vector<cv::Vec4i> hierarchy;
-    std::vector<std::vector<cv::Point>> contours;
-    contours.clear();
-    std::vector<std::vector<cv::Point>> largest_contour;
-    double largest_area = 0;
-    cv::findContours(mask, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
-    for(size_t i = 0; i < contours.size(); i++){
-        if (cv::contourArea(contours[i]) > COUNTOURS_AREA_THRESHOLD){
-#ifdef TESTING_HSV
-        std::cout << i << ") Area: "  << cv::contourArea(contours[i]) << std::endl;
-#endif
-            if(cv::contourArea(contours[i]) > largest_area){
-                largest_area = cv::contourArea(contours[i]);
-                largest_contour.clear(); 
-                largest_contour.push_back(contours[i]);
-            }
-        }
+// ------------------------------------------------------------------
+//  Contours:
+//     cntImg = mask.clone();
+//     std::vector<cv::Vec4i> hierarchy;
+//     std::vector<std::vector<cv::Point>> contours;
+//     contours.clear();
+//     std::vector<std::vector<cv::Point>> largest_contour;
+//     double largest_area = 0;
+//     cv::findContours(mask, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+//     for(size_t i = 0; i < contours.size(); i++){
+//         if (cv::contourArea(contours[i]) > COUNTOURS_AREA_THRESHOLD){
+// #ifdef TESTING_HSV
+//         std::cout << i << ") Area: "  << cv::contourArea(contours[i]) << std::endl;
+// #endif
+//             if(cv::contourArea(contours[i]) > largest_area){
+//                 largest_area = cv::contourArea(contours[i]);
+//                 largest_contour.clear(); 
+//                 largest_contour.push_back(contours[i]);
+//             }
+//         }
  
         
-    }
+//     }
 
-#ifdef COUNTOURS_OBJ_AREA_THRESHOLD  
-    if(largest_area>=COUNTOURS_OBJ_AREA_THRESHOLD){ 
-        cv::drawContours(cntImg, largest_contour, -1, cv::Scalar(255, 0, 0), 2, cv::LINE_8, hierarchy, 0);
-        std::cout << "Ball exist" << std::endl;
-    }
-#else
-    cv::drawContours(cntImg, contours, -1, cv::Scalar(255, 0, 0), 2, cv::LINE_8, hierarchy, 0); 
-#endif
+// #ifdef COUNTOURS_OBJ_AREA_THRESHOLD  
+//     if(largest_area>=COUNTOURS_OBJ_AREA_THRESHOLD){ 
+//         cv::drawContours(cntImg, largest_contour, -1, cv::Scalar(255, 0, 0), 2, cv::LINE_8, hierarchy, 0);
+//         std::cout << "Ball exist" << std::endl;
+//     }
+// #else
+//     cv::drawContours(cntImg, contours, -1, cv::Scalar(255, 0, 0), 2, cv::LINE_8, hierarchy, 0); 
+// #endif
+// ------------------------------------------------------------------
+
 
 #ifdef TESTING_HSV
     // cv::imshow("Blur", tmpImg);
     // cv::imshow("HSV", hsvImg);
     // cv::imshow("Mask", mask);
-    cv::imshow("Contours", cntImg);
+    // cv::imshow("Contours", cntImg);
 #endif
 
     cv::Point ballCenter = (ballBound.br() + ballBound.tl())*0.5;
@@ -120,9 +135,6 @@ void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
     cv::Vec3f circle(ballCenter.x, ballCenter.y, radius);
     // ROS_INFO("New Circle: (%d, %d - %d)", ballCenter.x, ballCenter.y, radius);
     circles.push_back(circle);
-#ifdef TESTING_HSV
-        std::cout << "\tRadius: "  << radius << std::endl << std::endl;
-#endif
 
 // ----------------------------------------------------------------------------------------------------------
 #ifdef DEBUG_DISPLAY_TO_FRAME_INTERNAL_FRAMES

@@ -14,8 +14,8 @@
 #include "worker/hsvDetection.hpp"
 #include "worker/drawInfoToImage.hpp"
 
-// #define RECORD
-#define VIEW
+#define RECORD
+// #define VIEW
 
 // For undistortion 1280,720
 static float cameraCalibrationdata[9] = {9.113812935295416e+02, 0.651033616843436, 6.644831723997970e+02, 0, 9.113086377881884e+02, 3.713670194501918e+02,  0, 0, 1};
@@ -32,6 +32,7 @@ float ysensorsize_mm = 1354.724121;
 #define IMAGE_H 720
 
 int main(int argc, char** argv ){
+    std::cout << "Welcome" << std::endl << std::flush;
     std::string videoName = "../videos/t1.avi";
     int videoNum = -1;
     if (argc == 2) {
@@ -66,12 +67,14 @@ int main(int argc, char** argv ){
     std::ofstream myfile(filename, std::ios_base::app);
     myfile << "time,dist,xangle,yangle" << std::endl; 
 #endif
-
+std::cout << "." << std::flush ;
 #ifdef VIEW
     createTrackers();
     setupTrackers(5,26,56,123,255,103,255,1);     // 5,26,56,123,255,103,255,1
+#else
+    setupTrackersValues(5,26,56,123,255,103,255,1);     // 5,26,56,123,255,103,255,1
 #endif
-
+std::cout << "." << std::flush ;
     cv::Mat img, Unimg, tmpImg, outImg;
     bool playvideo = true;
     
@@ -99,7 +102,7 @@ int main(int argc, char** argv ){
         fixTrackers();
 #endif
         procData.balls.clear();
-        if (playvideo && !cap.read(img)){printf("Input has disconnected\n"); break;}
+        if (playvideo && !cap.read(img)){printf("Input has disconnected or video ended\n"); break;}
         cv::undistort(img, Unimg, camCalib, distCoef);
         // cv::imshow("Undistorted", Unimg);
         tmpImg = Unimg.clone();
@@ -110,19 +113,22 @@ int main(int argc, char** argv ){
         saveDistancesToProcData(circles, procData);
         cameraPrintInfo(tmpImg, 1);
         drawCircles(tmpImg, tmpImg, procData);
-        
+        std::cout << "." ;
+
 #ifdef RECORD
         myfile << std::to_string((clock() - beforeTime) / (double) CLOCKS_PER_SEC) << "," << procData.balls[0].distance_from_camera << "," << procData.balls[0].xangle << "," << procData.balls[0].yangle << std::endl;
         out << tmpImg;
         out1 << Unimg;
+        std::cout << "." << std::flush;
 #endif
 
 #ifdef VIEW
         cv::imshow("Out Image", tmpImg); 
-#endif
         char key = cv::waitKey(30); 
         if ( key == 27){ printf("Esc key is pressed by user. Exit!\n"); goto exitPoint;}
         if ( key == 'p' ) {playvideo = !playvideo;}
+#endif
+    
     }
 #ifndef RECORD
     goto repeatPoint;
