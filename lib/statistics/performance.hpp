@@ -8,6 +8,7 @@
 #include <cstring>
 #include <time.h>
 #include <stdlib.h>
+#include <fstream>
 
 #ifdef __GNUC__
 #define VARIABLE_IS_NOT_USED __attribute__ ((unused))
