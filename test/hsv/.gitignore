@@ -1,7 +1,10 @@
 *
 !.gitignore
 !main.cpp
+!test-misc.hpp
 !Makefile
 !CMakeLists.txt
 !videos/
 !videos/README
+!img/
+!img/README
