@@ -20,7 +20,7 @@
 #define IMAGE_W 1280
 #define IMAGE_H 720
 
-static float objRealSize_m =  0.208; // 0.144;   // TODO: You may need to change this value
+static float objRealSize_m =  0.206; // 0.144;   // TODO: You may need to change this value
 
 // For undistortion 1280,720
 static float cameraCalibrationdata[9] = {9.113812935295416e+02, 0.651033616843436, 6.644831723997970e+02, 0, 9.113086377881884e+02, 3.713670194501918e+02,  0, 0, 1};
@@ -28,7 +28,7 @@ static float distCoeffsCalibrationdata[5] = {-0.032436584225176, 0.0871465049563
 cv::Mat camCalib = cv::Mat(3, 3, CV_32F, cameraCalibrationdata);
 cv::Mat distCoef = cv::Mat(1, 5, CV_32F, distCoeffsCalibrationdata);
 // =========================================================================
-static float xsensorsize_mm = 1354.724121;
+static float xsensorsize_mm = 1355.31;//1414.24; //1354.724121; //1269.375; //1354.724121;
 static float ysensorsize_mm = 1354.724121;
 
 void procDataParams(ros_drone_swarm_mocap::mocap_worker_data &procData){
@@ -50,6 +50,10 @@ void procDataParams(ros_drone_swarm_mocap::mocap_worker_data &procData){
     // procData.pose.yaw = node_yaw;
 }
 
+void undDistord(cv::Mat &img, cv::Mat &Unimg){
+        cv::undistort(img, Unimg, camCalib, distCoef);
+}
+
 void findBallAndDisplay(ros_drone_swarm_mocap::mocap_worker_data &procData, cv::Mat &tmpImg){
     procData.balls.clear();
     std::vector<cv::Vec3f> circles;
@@ -58,6 +62,7 @@ void findBallAndDisplay(ros_drone_swarm_mocap::mocap_worker_data &procData, cv::
     saveDistancesToProcData(circles, procData);
     cameraPrintInfo(tmpImg, 1);
     drawCircles(tmpImg, tmpImg, procData);
+    calculateSensorSize(2*circles[0][2], 1.847, procData);
     std::cout << "." ;  
 }
 

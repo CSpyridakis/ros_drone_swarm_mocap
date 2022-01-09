@@ -8,12 +8,22 @@
 float calculateSensorSize(  int objectSizeInPixels, 
                             float objectsDistanceFromCameraInMeters, 
                             ros_drone_swarm_mocap::mocap_worker_data& procData){
-
-    return calculateSensorsSizeFull(procData.camera.XfocalLengthInMillimeters, 
+    
+    float retVal = calculateSensorsSizeFull(procData.camera.XfocalLengthInMillimeters, 
                                     procData.camera.objectsRealSizeInMeter, 
                                     procData.camera.imageWidthInPixels,
                                     objectSizeInPixels, 
                                     objectsDistanceFromCameraInMeters);
+#ifdef TESTING_HSV
+    std::cout << "Focal length (mm): " << procData.camera.XfocalLengthInMillimeters <<  
+                " | Obj size (m): " << procData.camera.objectsRealSizeInMeter << 
+                " | Img width (pixels): " << procData.camera.imageWidthInPixels <<
+                " | Obj size (pixels): " << objectSizeInPixels << 
+                " | Dist from camera (m): " << objectsDistanceFromCameraInMeters << 
+                " | Sens size (mm): " << retVal << std::endl;
+#endif
+
+    return retVal;
 }
 
 float calculateDistanceWithDataStruct(  int objectSizeInPixels, 
@@ -51,18 +61,18 @@ void fixCenterRadius(std::vector<cv::Vec3f> &circles){
     static std::vector<cv::Vec3f> circles_buf;
     // Due to noise, for long ranges (short radius circles) increase diameter size
     // to improve range estimation  
-    for(int i=0; i<circles.size();i++){
-        if (circles[i][2] < 100){
-            circles[i][2] = circles[i][2]*1.1; 
-        }
-        else if (circles[i][2] < 50){
-            circles[i][2] = circles[i][2]*1.15; 
-        }
-        else if (circles[i][2] < 30){
-            circles[i][2] = circles[i][2]*1.2; 
-        }
-        else if (circles[i][2] < 15){
-            circles[i][2] = circles[i][2]*1.3; 
-        }
-    }
+    // for(int i=0; i<circles.size();i++){
+    //     if (2*circles[i][2] < 100){
+    //         circles[i][2] = circles[i][2]*1.1; 
+    //     }
+    //     else if (2*circles[i][2] < 50){
+    //         circles[i][2] = circles[i][2]*1.15; 
+    //     }
+    //     else if (2*circles[i][2] < 30){
+    //         circles[i][2] = circles[i][2]*1.2; 
+    //     }
+    //     else if (2*circles[i][2] < 15){
+    //         circles[i][2] = circles[i][2]*1.3; 
+    //     }
+    // }
 }
