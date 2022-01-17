@@ -40,3 +40,20 @@ set(p, 'linewidth', 2);
 text(8, -0.3, '10', 'FontSize', 24);
 title('Pixels - Distance relationship for range estimation', 'FontSize', fontSize+4);
 
+hold on;
+pix = 100
+pixId = pix - 10 + 1;
+dist = dist_x(pixId)
+p = plot(pix, dist, 'or'); 
+set(gca,'FontSize',axisFontSize);
+hold on; plot([pix pix],[0 14]); hold on; plot([0 250],[dist dist]);
+
+hold on;
+pix2 = pix + 1
+pixId2 = pix2 - 10 + 1;
+dist2 = dist_x(pixId2)
+p = plot(pix2, dist2, 'or'); 
+set(gca,'FontSize',axisFontSize);
+hold on; plot([pix2 pix2],[0 14]); hold on; plot([0 250],[dist2 dist2]);
+
+
