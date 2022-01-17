@@ -5,8 +5,8 @@
 #define VIEW
 
 // #define VIDEO 
-// #define CAMERA
-#define PHOTOS
+#define CAMERA
+// #define PHOTOS
 
 std::string  photosfolderName = "n4";
 #ifdef CAMERA 
@@ -42,7 +42,7 @@ int main(int argc, char** argv ){
 #ifdef VIEW
     createTrackers();
 #endif
-    setupTrackers(5,26,255,123,255,103,255,1);     // 5,26,56,123,255,103,255,1
+    setupTrackers(5,0,36,120,168,129,255,1);     //5,26,255,123,255,103,255,1 // 5,26,56,123,255,103,255,1
 
     // Open Video
     repeatPoint:
