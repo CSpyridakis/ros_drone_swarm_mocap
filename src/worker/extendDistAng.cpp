@@ -15,12 +15,12 @@ float calculateSensorSize(  int objectSizeInPixels,
                                     objectSizeInPixels, 
                                     objectsDistanceFromCameraInMeters);
 #ifdef TESTING_HSV
-    std::cout << "Focal length (mm): " << procData.camera.XfocalLengthInMillimeters <<  
-                " | Obj size (m): " << procData.camera.objectsRealSizeInMeter << 
-                " | Img width (pixels): " << procData.camera.imageWidthInPixels <<
-                " | Obj size (pixels): " << objectSizeInPixels << 
-                " | Dist from camera (m): " << objectsDistanceFromCameraInMeters << 
-                " | Sens size (mm): " << retVal << std::endl;
+    // std::cout << "Focal length (mm): " << procData.camera.XfocalLengthInMillimeters <<  
+    //             " | Obj size (m): " << procData.camera.objectsRealSizeInMeter << 
+    //             " | Img width (pixels): " << procData.camera.imageWidthInPixels <<
+    //             " | Obj size (pixels): " << objectSizeInPixels << 
+    //             " | Dist from camera (m): " << objectsDistanceFromCameraInMeters << 
+    //             " | Sens size (mm): " << retVal << std::endl;
 #endif
 
     return retVal;
