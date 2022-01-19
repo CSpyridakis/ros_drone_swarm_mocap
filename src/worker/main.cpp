@@ -9,6 +9,7 @@
 #include "ros_drone_swarm_mocap/mocap_worker_data.h"
 #include "ros_drone_swarm_mocap/camera_params.h"
 #include "ros_drone_swarm_mocap/obj_pose.h"
+#include "ros_drone_swarm_mocap/master_time.h"
 
 // Opencv and image transport
 #include <opencv2/opencv.hpp>
@@ -34,7 +35,11 @@ ros_drone_swarm_mocap::mocap_worker_data procData;
 //  ==============================================================================================================
 //  ==============================================================================================================
 
+ros_drone_swarm_mocap::master_time masterPgk;
 
+void updateMasterTimeCB(const ros_drone_swarm_mocap::master_time::ConstPtr& timePkg){
+    masterPgk = *timePkg;
+}
 
 void CallbackFunction(const sensor_msgs::Image::ConstPtr& inImage){
     cv::Mat feedOut;
@@ -52,6 +57,8 @@ void CallbackFunction(const sensor_msgs::Image::ConstPtr& inImage){
     
     // Detect Ball
     detectBall(feedIn, feedOut, procData);
+
+    procData.master_data = masterPgk;
 
     // Publish processed data to topics
     sensor_msgs::ImagePtr procImage = cv_bridge::CvImage(std_msgs::Header(), "bgr8", feedOut).toImageMsg();
@@ -117,6 +124,7 @@ int main(int argc, char **argv){
     image_transport::Subscriber rawImage = it.subscribe(subImageTopic, 1, CallbackFunction);
     processedImage = it.advertise(pubImageTopic, 1);
     processedData = n.advertise<ros_drone_swarm_mocap::mocap_worker_data>(pubImageDataTopic, 30);
+    ros::Subscriber master_time = n.subscribe("/master/time", 5, updateMasterTimeCB); 
 
     // Just for debugging, create subscribers to change detection parameters through topics 
 #ifdef DEBUG

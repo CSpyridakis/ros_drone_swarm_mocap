@@ -1,6 +1,9 @@
 <launch>
     <!-- Read parameters -->
     <rosparam command="load" file="$(find ros_drone_swarm_mocap)/config/params.yaml"/>
+    
+    <node name="station_node" pkg="ros_drone_swarm_mocap" type="station_node" output="screen"/>
 
+    <include file="$(find ros_drone_swarm_mocap)/launch/worker.launch"/>
     
 </launch>

@@ -67,6 +67,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
+  master_time.msg
   detected_ball_data.msg
   mocap_worker_data.msg
   hough_values.msg
