@@ -23,6 +23,24 @@ y2=r2*sin(teta);
 
 dec = 40;
 
+cpp_est = [0, 0, 0
+0.059354, 0.0173186, 0
+-0.978573, -0.070893, 0
+-0.0874215, 1.07524, 0
+1.04509, 0.0492266, 0
+0.164169, -1.00916, 0
+0.120037, -0.487722, 0
+-0.226777, -0.425303, 0
+-0.445583, -0.0545401, 0
+-0.266883, 0.30435, 0
+-0.0151243, 0.484998, 0
+0.345903, 0.345903, 0
+0.565318, 0.0651951, 0
+0.416937, -0.344639, 0];
+
+
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -61,6 +79,7 @@ A = [ 1,-2*n(1,x),-2*n(1,y),-2*n(1,z)
       1,-2*n(4,x),-2*n(4,y),-2*n(4,z)];
 
 for t = 1:13
+disp([num2str(n_dist(1,t)), '    ', num2str(n_dist(2,t)), '    ', num2str(n_dist(3,t)), '    ',num2str(n_dist(4,t))]);
 B = [n_dist(1,t)^2 - n(1,x)^2 - n(1,y)^2 - n(1,z)^2
     n_dist(2,t)^2 - n(2,x)^2 - n(2,y)^2 - n(2,z)^2
     n_dist(3,t)^2 - n(3,x)^2 - n(3,y)^2 - n(3,z)^2
@@ -100,29 +119,23 @@ hold on;
 stem3([r*sin(dec) -r*sin(dec) r*sin(dec) -r*sin(dec)],[r*cos(dec) r*cos(dec) -r*cos(dec) -r*cos(dec)], [0 0 0 0],'MarkerSize',30,'Color', 'black', 'LineStyle', 'none' ,'LineWidth',lineWidth)
 hold on;
 plot3([0 0], [-1.5 1.5], [0 0],'Color', 'k');
-for t = 2:14
-    height = ALL(t,3);%ALL(t,3);
-hold on ; stem3(ALL(t,1), ALL(t,2), height,'MarkerSize',20,'Color', 'green','LineStyle', 'none' ,'LineWidth',5);
-text(ALL(t,1), ALL(t,2), height+0.1, int2str(t-1), 'FontSize', 20, 'Color', 'b')
+for t = 2:13
+    height = 0;%ALL(t,3);%ALL(t,3);
+%hold on ; stem3(ALL(t,1), ALL(t,2), height,'MarkerSize',20,'Color', 'green','LineStyle', 'none' ,'LineWidth',5);
+%text(ALL(t,1), ALL(t,2), height+0.1, int2str(t-1), 'FontSize', 20, 'Color', 'b')
+
+hold on; stem3(cpp_est(t,1), cpp_est(t,2), cpp_est(t,3),'MarkerSize',20,'Color', 'green','LineStyle', 'none' ,'LineWidth',5);
+text(cpp_est(t,1), cpp_est(t,2), cpp_est(t,3) + 0.1, int2str(t-1), 'FontSize', 20, 'Color', 'b')
 end
-for t = 1:1
- location = 5;
+colors_t = ['b' 'r' 'g' 'c'];
+for t = 1:0
+ location = 10;
  Rg = n_dist(t,location);
- [SX SY SZ] = sphere(128); 
- SX = SX * Rg; 
- SY = SY * Rg; 
- SZ = SZ * Rg; 
- h = surfl(SX + n(t,x),SY + n(t,y),SZ + n(t,z)); 
- if t == 1
-    set(h, 'FaceAlpha', 0.2, 'FaceColor',[0 0 1]); 
- elseif t == 2
-    set(h, 'FaceAlpha', 0.2, 'FaceColor',[1 0 0]); 
- elseif t == 3
-    set(h, 'FaceAlpha', 0.2, 'FaceColor',[0 1 0]); 
- else
-    set(h, 'FaceAlpha', 0.2, 'FaceColor',[1 0 1]); 
- end
- shading interp
+ [SX SY SZ] = sphere(100); 
+ SX = SX * Rg + n(t,x); 
+ SY = SY * Rg + n(t,y); 
+ SZ = SZ * Rg + n(t,z); 
+ mesh(SX,SY,SZ,'Facecolor','none','EdgeColor',colors_t(mod(t,4)+1)); hold on
 end
 
 text(0, 0, 0.1, '1', 'FontSize', 20, 'Color', 'r')

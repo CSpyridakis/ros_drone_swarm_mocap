@@ -68,7 +68,8 @@
         "random": "cpp",
         "variant": "cpp",
         "filesystem": "cpp",
-        "codecvt": "cpp"
+        "codecvt": "cpp",
+        "dense": "cpp"
     },
     "spellright.language": [
         "English (American)",

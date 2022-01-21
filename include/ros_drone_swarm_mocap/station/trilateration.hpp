@@ -3,7 +3,7 @@
 
 #include <ros/ros.h>
 #include <iostream>
-
+#include <eigen3/Eigen/Dense>
 #include "pose.h"
 
 typedef struct anchor_data{
