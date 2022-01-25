@@ -13,6 +13,8 @@ add_compile_options(
 
 find_package(OpenCV 4.2 REQUIRED)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages

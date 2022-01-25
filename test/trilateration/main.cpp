@@ -37,7 +37,7 @@ int main(int argv, char * argc[]){
     std::cout << "Welcome " << std::endl;
 
     std::vector<anchor_data> anchors;
-    std::cout << "[0, 0, 0 \n";
+    std::cout << "cpp_est = [0, 0, 0 \n";
     for(int j=0;j<13;j++){
         // std::cout << j << std::endl << "------------------------- " <<std::endl;
         anchors.clear();
@@ -53,7 +53,7 @@ int main(int argv, char * argc[]){
         if(j<12){
             std::cout << std::endl;
         } else{
-            std::cout << "]" << std::endl;
+            std::cout << "];" << std::endl;
         }
     }
     return 0;

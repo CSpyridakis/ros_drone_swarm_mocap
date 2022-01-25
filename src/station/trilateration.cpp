@@ -35,10 +35,11 @@ trilatRet trilateration(const std::vector<anchor_data> anchors, Point &objectsPo
     // std::cout << std::endl;
     // std::cout << std::endl;
 
-    Eigen::Matrix <float, 4, 1> x = A.colPivHouseholderQr().solve(B);
+    // Eigen::Matrix <float, 4, 1> x = A.colPivHouseholderQr().solve(B);
+    Eigen::Matrix <float, 4, 1> x = (A.transpose() * A).ldlt().solve(A.transpose() * B);
     objectsPose.pos.x = x[1];
     objectsPose.pos.y = x[2];
-    objectsPose.pos.z = (x[3] < 0) ? 0 : x[3];
+    objectsPose.pos.z = x[3]; //(x[3] < 0) ? 0 : x[3];
     // std::cout << "Estimation\n" << x << std::endl << std::endl;
 
     return SUCCESS;
