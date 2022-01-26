@@ -1,6 +1,5 @@
 <launch>
 
-
     <!--  ======================================================= ARGS + PARAMS ====================================================== -->
 
 
@@ -66,7 +65,7 @@
 
 
     <!-- Ball Detection -->
-    <node name="worker_node_$(arg nodeID)" pkg="ros_drone_swarm_mocap" type="worker_node" output="screen"/>
+    <node name="worker_node_$(arg nodeID)" pkg="ros_drone_swarm_mocap" type="worker_node" output="screen"  /> <!-- for debug mode use: launch-prefix="gdb - -args"-->
 
 
 

@@ -63,11 +63,10 @@ void findBallAndDisplay(ros_drone_swarm_mocap::mocap_worker_data &procData, cv::
     cameraPrintInfo(tmpImg, procData.nodeID);
     drawCircles(tmpImg, tmpImg, procData);
     calculateSensorSize(2*circles[0][2], 1.847, procData);
-    std::cout << "." ;  
+    // std::cout << "." ;  
 }
 
 void setCameraCaptureProperties(cv::VideoCapture &cap){
-    cap.open(0, cv::CAP_V4L2);
     cap.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));      // More fps less resolution (at least for my setup)
     cap.set(cv::CAP_PROP_FRAME_WIDTH, IMAGE_W);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, IMAGE_H);

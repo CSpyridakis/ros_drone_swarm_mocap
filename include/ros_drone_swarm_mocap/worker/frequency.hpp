@@ -2,18 +2,26 @@
 #define FREQUENCY_HPP
 
 #include <opencv2/opencv.hpp>
+#include <ctime> // for clock() and count time
+
+#define QUEUE_SIZE 500
 
 class frequency_analysis{
     private:
-        const int MAX_NUM = 500;
-        std::queue<float> area;
-        std::queue<float> time;
+        int countUp = 0;
+        int countDown = 0;
+
+        bool lastUp = false;
+        clock_t lastTimeUp;
+        clock_t upTimeStart;
+        double period = 0.0; 
+        double calc_period(int radius);
     public:
         frequency_analysis();
-        void add_data(float area, float time);
-        float get_frequency();
+        frequency_analysis(int gau, int iH, int xH, int nS, int xS, int nV, int xV, int dir);
+        void update(cv::Mat& img, cv::Mat& imghsv, cv::Rect obj, cv::Rect &outObj);
+        double get_frequency();
 };
 
-void get_frequency_Mat(cv::Mat& img);
 
 #endif //FREQUENCY_HPP

@@ -1,6 +1,10 @@
 #include "worker/hsvDetection.hpp"
 #include "worker/misc.hpp"
+#include "worker/frequency.hpp"
 
+static frequency_analysis fa(7,63,105,48,115,149,255,1);
+
+#define FREQUENCY
 #define COUNTOURS_AREA_THRESHOLD 200
 #define COUNTOURS_OBJ_AREA_THRESHOLD 0
 
@@ -120,7 +124,7 @@ void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
 // #else
 //     cv::drawContours(cntImg, contours, -1, cv::Scalar(255, 0, 0), 2, cv::LINE_8, hierarchy, 0); 
 // #endif
-// ------------------------------------------------------------------
+// -----------------------------------------------------------------
 
 
 #ifdef TESTING_HSV
@@ -135,6 +139,12 @@ void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
     cv::Vec3f circle(ballCenter.x, ballCenter.y, radius);
     // ROS_INFO("New Circle: (%d, %d - %d)", ballCenter.x, ballCenter.y, radius);
     circles.push_back(circle);
+
+#ifdef FREQUENCY
+    // Frequency analysis
+    cv::Rect leds;
+    fa.update(initImg, hsvImg, ballBound, leds);
+#endif
 
 // ----------------------------------------------------------------------------------------------------------
 #ifdef DEBUG_DISPLAY_TO_FRAME_INTERNAL_FRAMES
@@ -154,6 +164,8 @@ void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
     cv::Mat rgbHistogram, hsvHistogram;
     getHistogram(initImg, rgbHistogram);
     getHistogram(hsvImg, hsvHistogram);
+
+    cv::rectangle(img, leds,  cv::Scalar(0, 255, 0),2);
     
     copyImageTo(img, rgbHistogram, "RGB Histogram", 1014, 10, picScale);
     copyImageTo(img, hsvHistogram, "HSV Histogram", 1147, 10, picScale);

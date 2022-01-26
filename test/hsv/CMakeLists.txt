@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
 
+add_compile_options(
+  -Wall
+  -Wextra
+  -Wpedantic
+  # -Werror
+)
+
 project( ros_drone_swarm_mocap )
 set(CATKIN_WS catkin_ws)
 set(CATKIN_POS ${HOME})
@@ -20,6 +27,7 @@ set(FilesToInclude
 	../../src/worker/misc.cpp
 	../../src/worker/hsvDetection.cpp
 	../../src/worker/extendDistAng.cpp
+	../../src/worker/frequency.cpp
 	../../lib/distance-angle/distance-angle.cpp
 	../../lib/statistics/performance.cpp
 )
