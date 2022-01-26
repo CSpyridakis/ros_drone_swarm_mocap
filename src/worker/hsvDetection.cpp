@@ -2,7 +2,7 @@
 #include "worker/misc.hpp"
 #include "worker/frequency.hpp"
 
-static frequency_analysis fa(7,45,255,21,255,218,255,1);
+static frequency_analysis fa(7,95,179,8,216,0,255,1);
 
 #define FREQUENCY
 #define COUNTOURS_AREA_THRESHOLD 200
@@ -10,12 +10,12 @@ static frequency_analysis fa(7,45,255,21,255,218,255,1);
 
 #define ALL_NODES 0
 
-static int gaussian_kernel_size = 5;
-static int minH = 40;
-static int minS = 70;
-static int minV = 150;
-static int maxH = 60;
-static int maxS = 120;
+static int gaussian_kernel_size = 11;
+static int minH = 28;
+static int minS = 53;
+static int minV = 54;
+static int maxH = 105;
+static int maxS = 143;
 static int maxV = 255;
 static int di_er_kernel = 1;
 
@@ -74,7 +74,7 @@ void updateHSVvaluesCallback(const ros_drone_swarm_mocap::hsv_values::ConstPtr& 
         maxV = msg->maxV;
         di_er_kernel = msg->di_er_kernel;
         if (di_er_kernel % 2 == 0 ) di_er_kernel = di_er_kernel > 0 ? di_er_kernel + 1 : 1;
-        // ROS_INFO("Got new HSV values Min(%d, %d, %d), Max(%d, %d, %d) | di_er_kernel: %d, gaussian_kernel_size: %d", minH, minS, minV, maxH, maxS, maxV, di_er_kernel, gaussian_kernel_size);
+        ROS_INFO("Got new HSV values Min(%d, %d, %d), Max(%d, %d, %d) | di_er_kernel: %d, gaussian_kernel_size: %d", minH, minS, minV, maxH, maxS, maxV, di_er_kernel, gaussian_kernel_size);
     }
 }
 

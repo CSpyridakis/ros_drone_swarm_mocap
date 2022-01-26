@@ -24,7 +24,7 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     cv::Mat imgTmp;
 
     std::vector<cv::Vec3f> circles;
-    std::vector<doubles> inCirclesLedDuration;
+    std::vector<double> inCirclesLedDuration;
     
     cv::Mat hsvImg = img.clone();
     cv::Mat houghImg = img.clone();
