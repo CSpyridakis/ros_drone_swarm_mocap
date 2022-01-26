@@ -32,7 +32,7 @@ static float xsensorsize_mm = 1355.31;//1414.24; //1354.724121; //1269.375; //13
 static float ysensorsize_mm = 1354.724121;
 
 void procDataParams(ros_drone_swarm_mocap::mocap_worker_data &procData){
-    procData.nodeID = 4;
+    procData.nodeID = 0;
     procData.camera.imageHeightInPixels = IMAGE_H;
     procData.camera.imageWidthInPixels =IMAGE_W;
     procData.camera.XfocalLengthInMillimeters = cameraCalibrationdata[0];
@@ -55,12 +55,16 @@ void undDistord(cv::Mat &img, cv::Mat &Unimg){
 }
 
 void findBallAndDisplay(ros_drone_swarm_mocap::mocap_worker_data &procData, cv::Mat &tmpImg){
+    std::vector<double> inCirclesLedDuration;
     procData.balls.clear();
     std::vector<cv::Vec3f> circles;
-    hsvDetection(tmpImg, circles);
+    hsvDetection(tmpImg, circles, inCirclesLedDuration);
     fixCenterRadius(circles);
-    saveDistancesToProcData(circles, procData);
-    cameraPrintInfo(tmpImg, procData.nodeID);
+    saveDistancesToProcData(circles, procData, inCirclesLedDuration);
+    
+    std::string durText = "Duration: " + std::to_string(inCirclesLedDuration[0]);
+
+    cameraPrintInfo(tmpImg, procData.nodeID, durText);
     drawCircles(tmpImg, tmpImg, procData);
     calculateSensorSize(2*circles[0][2], 1.847, procData);
     // std::cout << "." ;  

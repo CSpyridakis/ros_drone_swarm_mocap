@@ -13,7 +13,7 @@
  * \param img
  * 
 */
-void cameraPrintInfo(cv::Mat &img, int id){
+void cameraPrintInfo(cv::Mat &img, int id, std::string extraText = ""){
     cv::Scalar greenColor(0, 255, 0);
     cv::Scalar redColor(0, 0, 255);
     cv::Scalar blueColor(255, 0, 0);
@@ -45,6 +45,8 @@ void cameraPrintInfo(cv::Mat &img, int id){
     float ru_total_gb = ru.total/(1024*1024*1024);
     resTxt = "Ram: " + to_string_with_precision(ru_used_gb,2) + "GB / " + to_string_with_precision(ru_total_gb,2) + "GB";
     cv::putText(img, resTxt, cv::Point(50, 130), cv::FONT_HERSHEY_DUPLEX, 0.5, redColor, 0.5);
+
+    cv::putText(img, extraText, cv::Point(50, 150), cv::FONT_HERSHEY_DUPLEX, 0.5, redColor, 0.5);
 
     // net_usage nu = get_net_usage();  
     // float nu_up_mb = nu.up/(8*1024*1024);
@@ -87,6 +89,7 @@ void drawCircles(cv::Mat img, cv::Mat& outimg, const ros_drone_swarm_mocap::moca
         float d = bd.distance_from_camera;
         float ax = bd.xangle;
         float ay = bd.yangle;
+        int id = bd.id;
         cv::Point center(x, y);
         
         // circle center
@@ -94,9 +97,11 @@ void drawCircles(cv::Mat img, cv::Mat& outimg, const ros_drone_swarm_mocap::moca
         // cv::circle(outimg, center, r, blueColor, 2, cv::LINE_AA);
         cv::rectangle(outimg, cv::Rect(x - r, y - r, r*2, r*2), blueColor,2);
 
+        std::string textID = "ID: " + std::to_string(id);
         std::string textD = "Distance: " + std::to_string(d);
         std::string textAx = "Angle x: " + std::to_string(ax);
         std::string textAy = "Angle y: " + std::to_string(ay);
+        cv::putText(outimg, textID, cv::Point(x-r, y-r-70), cv::FONT_HERSHEY_DUPLEX, 0.7, redColor, 1);
         cv::putText(outimg, textD, cv::Point(x-r, y-r-50), cv::FONT_HERSHEY_DUPLEX, 0.7, redColor, 1);
         cv::putText(outimg, textAx, cv::Point(x-r, y-r-30), cv::FONT_HERSHEY_DUPLEX, 0.7, redColor, 1);
         cv::putText(outimg, textAy, cv::Point(x-r, y-r-10), cv::FONT_HERSHEY_DUPLEX, 0.7, redColor, 1);

@@ -24,6 +24,7 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     cv::Mat imgTmp;
 
     std::vector<cv::Vec3f> circles;
+    std::vector<doubles> inCirclesLedDuration;
     
     cv::Mat hsvImg = img.clone();
     cv::Mat houghImg = img.clone();
@@ -32,7 +33,7 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
 
 #if DETECTION_MODE == MODE_COLOR_DETECTION
 #ifdef DEBUG_FUNCTIONS
-    D_TIME(time_now, hsvDetection(hsvImg, circles), "hsvDetection");
+    D_TIME(time_now, hsvDetection(hsvImg, circles, inCirclesLedDuration), "hsvDetection");
 #else
     hsvDetection(hsvImg, circles);
 #endif
@@ -50,7 +51,7 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
 #endif
 
     fixCenterRadius(circles);
-    saveDistancesToProcData(circles, procData);
+    saveDistancesToProcData(circles, procData, inCirclesLedDuration);
 
 #ifdef DEBUG
     cameraPrintInfoprocData(imgProcDebug, procData);

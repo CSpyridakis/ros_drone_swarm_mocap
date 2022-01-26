@@ -43,7 +43,7 @@ int main(int argc, char** argv ){
     createTrackers();
 #endif
     // setupTrackers(9,26,114,97,172,77,161,1);//(5,0,36,120,168,129,255,1);     //5,26,255,123,255,103,255,1 // 5,26,56,123,255,103,255,1
-    setupTrackers(11,28,61,49,150,125,227,1);//(5,0,36,120,168,129,255,1);     //5,26,255,123,255,103,255,1 // 5,26,56,123,255,103,255,1
+    setupTrackers(11,26,38,129,212,77,202,1);//(5,0,36,120,168,129,255,1);     //5,26,255,123,255,103,255,1 // 5,26,56,123,255,103,255,1
 
     // Open Video
     repeatPoint:
@@ -83,19 +83,12 @@ int main(int argc, char** argv ){
         cv::undistort(img, Unimg, camCalib, distCoef);
         // cv::imshow("Undistorted", Unimg);
         tmpImg = Unimg.clone();
-
+        
         findBallAndDisplay(procData, tmpImg);
-
-#ifdef RECORD
-        myfile << std::to_string((clock() - beforeTime) / (double) CLOCKS_PER_SEC) << "," << procData.balls[0].distance_from_camera << "," << procData.balls[0].xangle << "," << procData.balls[0].yangle << std::endl;
-        out << tmpImg;
-        out1 << Unimg;
-        // std::cout << "." << std::flush;
-#endif
 
 #ifdef VIEW
         cv::imshow("Out Image", tmpImg); 
-        char key = cv::waitKey(10);
+        char key = cv::waitKey(30);
         if ( key == 27){ printf("Esc key is pressed by user. Exit!\n"); goto exitPoint;}
         if ( key == 'p' ) {playvideo = !playvideo;}
         if ( key == 'n' ) { if(curImg + 1 < img_count) curImg ++; else break; }
@@ -111,6 +104,14 @@ int main(int argc, char** argv ){
             myfile << std::to_string((clock() - beforeTime) / (double) CLOCKS_PER_SEC) << "," << procData.balls[0].distance_from_camera << "," << procData.balls[0].xangle << "," << procData.balls[0].yangle << std::endl;
 #endif
         }
+
+#ifdef RECORD
+myfile << std::to_string((clock() - beforeTime) / (double) CLOCKS_PER_SEC) << "," << procData.balls[0].distance_from_camera << "," << procData.balls[0].xangle << "," << procData.balls[0].yangle << std::endl;
+out << tmpImg;
+out1 << Unimg;
+// std::cout << "." << std::flush;
+#endif
+
 #endif
     
     }

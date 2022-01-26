@@ -25,6 +25,6 @@ void updateHSVvaluesCallback(const ros_drone_swarm_mocap::hsv_values::ConstPtr& 
  * 
  * \param circles
  */
-void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles);
+void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles, std::vector<double> &inCircleLedDur);
 
 #endif //HSV_DETECTION_HPP

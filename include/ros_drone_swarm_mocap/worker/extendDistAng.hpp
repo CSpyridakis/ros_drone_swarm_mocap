@@ -28,7 +28,7 @@ float calculateDistanceWithDataStruct(int objectSizeInPixels, ros_drone_swarm_mo
  * \param circles
  * \param procData
  */
-void saveDistancesToProcData(std::vector<cv::Vec3f> circles, ros_drone_swarm_mocap::mocap_worker_data& procData);
+void saveDistancesToProcData(std::vector<cv::Vec3f> circles, ros_drone_swarm_mocap::mocap_worker_data& procData, const std::vector<double> inCircleLedDur = std::vector<double>());
 
 void fixCenterRadius(std::vector<cv::Vec3f> &circles);
 

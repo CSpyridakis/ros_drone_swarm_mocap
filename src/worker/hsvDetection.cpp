@@ -2,7 +2,7 @@
 #include "worker/misc.hpp"
 #include "worker/frequency.hpp"
 
-static frequency_analysis fa(7,63,105,48,115,149,255,1);
+static frequency_analysis fa(7,45,255,21,255,218,255,1);
 
 #define FREQUENCY
 #define COUNTOURS_AREA_THRESHOLD 200
@@ -78,7 +78,7 @@ void updateHSVvaluesCallback(const ros_drone_swarm_mocap::hsv_values::ConstPtr& 
     }
 }
 
-void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
+void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles, std::vector<double> &inCircleLedDur){
     cv::Mat mask, bitwise_mask, hsvImg, cntImg, tmpImg = img.clone(), initImg = img.clone();
     cv::GaussianBlur(tmpImg, tmpImg, cv::Size(gaussian_kernel_size, gaussian_kernel_size), 5, 0);
     cv::cvtColor(tmpImg, hsvImg, cv::COLOR_BGR2HSV);
@@ -144,6 +144,7 @@ void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
     // Frequency analysis
     cv::Rect leds;
     fa.update(initImg, hsvImg, ballBound, leds);
+    inCircleLedDur.push_back(fa.get_period());
 #endif
 
 // ----------------------------------------------------------------------------------------------------------
@@ -165,7 +166,7 @@ void hsvDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
     getHistogram(initImg, rgbHistogram);
     getHistogram(hsvImg, hsvHistogram);
 
-    cv::rectangle(img, leds,  cv::Scalar(0, 255, 0),2);
+    cv::rectangle(img, leds,  cv::Scalar(0, 0, 255),2);
     
     copyImageTo(img, rgbHistogram, "RGB Histogram", 1014, 10, picScale);
     copyImageTo(img, hsvHistogram, "HSV Histogram", 1147, 10, picScale);

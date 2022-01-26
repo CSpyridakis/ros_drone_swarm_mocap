@@ -17,6 +17,9 @@ include_directories( ../../include/${PROJECT_NAME} )
 include_directories( ../../lib/ )
 include_directories( ../../../../devel/include/ )
 include_directories( /opt/ros/noetic/include )
+include_directories( /opt/ros/melodic/include )
+
+set(CMAKE_BUILD_TYPE Debug)
 
 add_definitions(-DTESTING_HSV)
 

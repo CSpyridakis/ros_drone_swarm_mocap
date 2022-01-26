@@ -6,14 +6,18 @@
 
 #define QUEUE_SIZE 500
 
+int get_id(float period);
+
 class frequency_analysis{
     private:
+        int samplesNum = 0;
+        double averagePeriod = 0;
         int countUp = 0;
         int countDown = 0;
 
         bool lastUp = false;
-        clock_t lastTimeUp;
-        clock_t upTimeStart;
+        double lastTimeUp;
+        double upTimeStart;
         double period = 0.0; 
         double calc_period(int radius);
     public:
@@ -21,6 +25,7 @@ class frequency_analysis{
         frequency_analysis(int gau, int iH, int xH, int nS, int xS, int nV, int xV, int dir);
         void update(cv::Mat& img, cv::Mat& imghsv, cv::Rect obj, cv::Rect &outObj);
         double get_frequency();
+        double get_period();
 };
 
 

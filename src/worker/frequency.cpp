@@ -1,5 +1,7 @@
 #include "worker/frequency.hpp"
 
+#include <sys/time.h>
+
 #define X_OFFSET 20
 #define Y_OFFSET 20
 
@@ -11,6 +13,12 @@ static int maxH = 60;
 static int maxS = 120;
 static int maxV = 255;
 static int di_er_kernel = 1;
+
+double gettime() {
+    struct timeval ttime;
+    gettimeofday(&ttime, NULL);
+    return ttime.tv_sec + ttime.tv_usec * 0.000001;
+}
 
 #ifdef TESTING_HSV
 static void createTrackersFreq(){
@@ -56,15 +64,36 @@ frequency_analysis::frequency_analysis(int gau, int iH, int xH, int nS, int xS, 
 }
 
 double frequency_analysis::calc_period(int radius){
+    // static bool lowFirst = true;
+
     if(lastUp && radius == 0){
-        lastTimeUp = clock();
+        upTimeStart = gettime();
         lastUp = false;
+        std::cout << "New: ";
+    }
+    else if(lastUp && radius > 0){
+        std::cout << "^";
     }
     else if(!lastUp && radius > 0){
         lastUp = true;
-        period = ((double) (clock() - upTimeStart) / CLOCKS_PER_SEC);
-        std::cout << period << std::endl;
+        period = (double) (gettime() - upTimeStart);
+        std::cout << "  " << period << std::endl;
     }
+    else if(!lastUp && radius == 0){
+        std::cout << ".";
+    }
+}
+
+int get_id(float period){
+    //std::cout << period << std::endl;
+    for (int i = 0; i<10; i++)
+        if (period > (double) (i*1.0) && period <= (double)((i+1)*1.0))
+            return i+1;
+    return 0;
+}
+
+double frequency_analysis::get_period(){
+    return period;
 }
 
 double frequency_analysis::get_frequency(){

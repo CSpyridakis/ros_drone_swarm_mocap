@@ -4,6 +4,7 @@
 #include "distance-angle/distance-angle.hpp"
 #include "statistics/performance.hpp"
 #include "worker/misc.hpp"
+#include "worker/frequency.hpp"
 
 float calculateSensorSize(  int objectSizeInPixels, 
                             float objectsDistanceFromCameraInMeters, 
@@ -36,7 +37,7 @@ float calculateDistanceWithDataStruct(  int objectSizeInPixels,
                                     procData.camera.XsensorSizeInMillimeters);
 }
 
-void saveDistancesToProcData(std::vector<cv::Vec3f> circles, ros_drone_swarm_mocap::mocap_worker_data& procData){
+void saveDistancesToProcData(std::vector<cv::Vec3f> circles, ros_drone_swarm_mocap::mocap_worker_data& procData, const std::vector<double> inCircleLedDur){
     ros_drone_swarm_mocap::detected_ball_data bd;
     for( uint k = 0; k < circles.size(); k++ ){
         bd.image_plane_x = circles[k][0];
@@ -53,6 +54,12 @@ void saveDistancesToProcData(std::vector<cv::Vec3f> circles, ros_drone_swarm_moc
         DEBUG_DA(ros::Time::now().toSec(), k, bd.distance_from_camera, bd.xangle, bd.yangle);
 #endif
 #endif
+        if(!inCircleLedDur.empty()){
+            bd.id = get_id(inCircleLedDur[k]);
+        }
+        else{
+            bd.id = 0;
+        } 
     }
     procData.balls.push_back(bd);
 }
