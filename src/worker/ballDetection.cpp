@@ -35,7 +35,7 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
 #ifdef DEBUG_FUNCTIONS
     D_TIME(time_now, hsvDetection(hsvImg, circles, inCirclesLedDuration), "hsvDetection");
 #else
-    hsvDetection(hsvImg, circles);
+    hsvDetection(hsvImg, circles, inCirclesLedDuration);
 #endif
     fixMatForImageTransfer(hsvImg);
     imgProcDebug = hsvImg.clone();
