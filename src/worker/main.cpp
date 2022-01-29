@@ -24,6 +24,7 @@
 #include "worker/misc.hpp"
 
 #include "statistics/performance.hpp"
+#include "worker/frequency.hpp"
 
 image_transport::Publisher processedImage;
 ros::Publisher processedData;
@@ -130,6 +131,7 @@ int main(int argc, char **argv){
 #ifdef DEBUG
     ros::Subscriber hue_sub = n.subscribe("/node/" + std::to_string(nodeID) + "/hsv_params", 5, updateHSVvaluesCallback); 
     ros::Subscriber hough_sub = n.subscribe("/node/" + std::to_string(nodeID) + "/hough_params",5, updateHoughvaluesCallback);
+    ros::Subscriber freq_hue_sub = n.subscribe("/node/" + std::to_string(nodeID) + "/frequency/hsv_params", 5, freqUpdateHSVvaluesCallback); 
 #endif
 
     D_INIT();

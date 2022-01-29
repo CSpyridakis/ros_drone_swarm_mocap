@@ -1,6 +1,7 @@
 #include "worker/frequency.hpp"
-
 #include <sys/time.h>
+
+#define ALL_NODES 0
 
 #define X_OFFSET 20
 #define Y_OFFSET 20
@@ -13,6 +14,22 @@ static int maxH = 60;
 static int maxS = 120;
 static int maxV = 255;
 static int di_er_kernel = 1;
+
+void freqUpdateHSVvaluesCallback(const ros_drone_swarm_mocap::hsv_values::ConstPtr& msg){
+    if (msg->id == 1 || msg->id == ALL_NODES ){  //TODO: change 
+        // if input gaussian kernel size is possitive and 
+        gaussian_kernel_size = (msg->gaussian_kernel_size > 0 && msg->gaussian_kernel_size% 2 != 0) ? msg->gaussian_kernel_size : gaussian_kernel_size + 1 ;
+        minH = msg->minH;
+        maxH = msg->maxH;
+        minS = msg->minS;
+        maxS = msg->maxS;  
+        minV = msg->minV;
+        maxV = msg->maxV;
+        di_er_kernel = msg->di_er_kernel;
+        if (di_er_kernel % 2 == 0 ) di_er_kernel = di_er_kernel > 0 ? di_er_kernel + 1 : 1;
+        ROS_INFO("Frequency: Got new HSV values Min(%d, %d, %d), Max(%d, %d, %d) | di_er_kernel: %d, gaussian_kernel_size: %d", minH, minS, minV, maxH, maxS, maxV, di_er_kernel, gaussian_kernel_size);
+    }
+}
 
 static double gettime() {
     struct timeval ttime;
@@ -69,18 +86,18 @@ double frequency_analysis::calc_period(int radius){
     if(lastUp && radius == 0){
         upTimeStart = gettime();
         lastUp = false;
-        std::cout << "New: ";
+        // std::cout << "New: ";
     }
     else if(lastUp && radius > 0){
-        std::cout << "^";
+        // std::cout << "^";
     }
     else if(!lastUp && radius > 0){
         lastUp = true;
         period = (double) (gettime() - upTimeStart);
-        std::cout << "  " << period << std::endl;
+        // std::cout << "  " << period << std::endl;
     }
     else if(!lastUp && radius == 0){
-        std::cout << ".";
+        // std::cout << ".";
     }
 }
 

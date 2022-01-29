@@ -63,8 +63,8 @@ void cameraPrintInfo(cv::Mat &img, int id, std::string extraText = ""){
  * \param circles 
 */
 #ifndef OUTSIDE_ROS_ENV
-void cameraPrintInfoprocData(cv::Mat &img, const ros_drone_swarm_mocap::mocap_worker_data& procData){
-    cameraPrintInfo(img, procData.nodeID);
+void cameraPrintInfoprocData(cv::Mat &img, const ros_drone_swarm_mocap::mocap_worker_data& procData, std::string extraText = ""){
+    cameraPrintInfo(img, procData.nodeID, extraText);
 }
 #endif
 

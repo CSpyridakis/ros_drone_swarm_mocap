@@ -2,6 +2,10 @@
 #define FREQUENCY_HPP
 
 #include <opencv2/opencv.hpp>
+#include <ros/ros.h>
+#include "worker/misc.hpp"
+#include "ros_drone_swarm_mocap/hsv_values.h"
+
 #include <ctime> // for clock() and count time
 
 #define QUEUE_SIZE 500
@@ -28,5 +32,6 @@ class frequency_analysis{
         double get_period();
 };
 
+void freqUpdateHSVvaluesCallback(const ros_drone_swarm_mocap::hsv_values::ConstPtr& msg);
 
 #endif //FREQUENCY_HPP
