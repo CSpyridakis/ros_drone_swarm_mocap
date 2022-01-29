@@ -20,7 +20,25 @@ void localizeObjectCB(const ros_drone_swarm_mocap::mocap_worker_data::ConstPtr& 
                       const ros_drone_swarm_mocap::mocap_worker_data::ConstPtr& procData2, 
                       const ros_drone_swarm_mocap::mocap_worker_data::ConstPtr& procData3, 
                       const ros_drone_swarm_mocap::mocap_worker_data::ConstPtr& procData4){
-    ROS_INFO("342");
+
+    ros_drone_swarm_mocap::mocap_worker_data pd[] = {(*procData1),  (*procData2), (*procData3), (*procData4)};
+
+    std::vector<anchor_data> anchors;
+    Point objectsPose;
+    
+    for(int i=0;i<4;i++){
+        anchor_data anc;
+
+        anc.pose = {{pd[i].pose.x, pd[i].pose.y, pd[i].pose.z},{pd[i].pose.roll, pd[i].pose.pitch, pd[i].pose.yaw}};
+        anc.objectsDistance = pd[i].balls[0].distance_from_camera + BALL_RADIOUS;
+
+        anchors.push_back(anc);
+        // ROS_INFO("N%d - [%f, %f, %f] - %f", pd[i].nodeID, anc.pose.pos.x, anc.pose.pos.y, anc.pose.pos.z, anc.objectsDistance);
+    }
+            
+    trilateration(anchors, objectsPose);
+
+    ROS_INFO("B (%f, %f, %f)\n", objectsPose.pos.x, objectsPose.pos.y, objectsPose.pos.z);
 }
 
 int packet_id = 0;

@@ -34,6 +34,7 @@ ros_drone_swarm_mocap::mocap_worker_data procData;
 static bool send_dummy = false;
 void addDummyDataForRanges(ros_drone_swarm_mocap::mocap_worker_data &procData){
     static int numOfDistances = 13;
+    static float node_distances[] = {1.927, 1.343, 1.198, 2.333, 2.396, 2.162, 1.970, 1.672, 1.528, 1.611, 1.886, 2.110, 2.273};
     static int currentIndex = 0;
     static int repeatTimes = 0;
 

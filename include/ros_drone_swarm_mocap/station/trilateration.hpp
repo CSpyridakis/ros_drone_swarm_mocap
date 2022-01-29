@@ -6,6 +6,8 @@
 #include <eigen3/Eigen/Dense>
 #include "pose.h"
 
+#define BALL_RADIOUS (float) (0.144)
+
 typedef struct anchor_data{
     Point pose;                 // Anchor's pose (position + orientation)
     double objectsDistance;     // Detected object's distance 
