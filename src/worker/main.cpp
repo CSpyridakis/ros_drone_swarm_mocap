@@ -10,6 +10,7 @@
 #include "ros_drone_swarm_mocap/camera_params.h"
 #include "ros_drone_swarm_mocap/obj_pose.h"
 #include "ros_drone_swarm_mocap/master_time.h"
+#include "ros_drone_swarm_mocap/commands_from_master.h"
 
 // Opencv and image transport
 #include <opencv2/opencv.hpp>
@@ -30,13 +31,45 @@ image_transport::Publisher processedImage;
 ros::Publisher processedData;
 ros_drone_swarm_mocap::mocap_worker_data procData;
 
+static bool send_dummy = false;
+void addDummyDataForRanges(ros_drone_swarm_mocap::mocap_worker_data &procData){
+    static int numOfDistances = 3;
+    static float node_distances[] = {1,2,3};
+    static int currentIndex = 0;
+    static int repeatTimes = 0;
 
+    if(send_dummy){
+        procData.balls[0].distance_from_camera = node_distances[currentIndex];
+        repeatTimes++;
+        if(repeatTimes >= 30){
+            repeatTimes = 0;
+            currentIndex = (currentIndex + 1 <= numOfDistances) ? currentIndex + 1 : 0;  
+        }
+            
+    }
+}
+
+void syncDataWithWorkersLocation(ros_drone_swarm_mocap::mocap_worker_data &procData){
+    procData.pose.x = 0;
+    procData.pose.y = 0;
+    procData.pose.z = 0;
+
+    procData.pose.roll = 0;
+    procData.pose.pitch = 0;
+    procData.pose.yaw = 0;
+}
 
 //  ==============================================================================================================
 //  ==============================================================================================================
 //  ==============================================================================================================
 
 ros_drone_swarm_mocap::master_time masterPgk;
+
+void getCommandsFromMasterCB(const ros_drone_swarm_mocap::commands_from_master::ConstPtr& commands){
+    ROS_INFO("Receive commands from master");
+    // send_dummy = cmds.workers_enable_messages;
+    send_dummy = commands->workers_send_dummy;
+}
 
 void updateMasterTimeCB(const ros_drone_swarm_mocap::master_time::ConstPtr& timePkg){
     masterPgk = *timePkg;
@@ -60,6 +93,10 @@ void CallbackFunction(const sensor_msgs::Image::ConstPtr& inImage){
     detectBall(feedIn, feedOut, procData);
 
     procData.master_data = masterPgk;
+    syncDataWithWorkersLocation(procData);
+
+    // TODO: Remove ONLY for sync testing!
+    addDummyDataForRanges(procData);
 
     // Publish processed data to topics
     sensor_msgs::ImagePtr procImage = cv_bridge::CvImage(std_msgs::Header(), "bgr8", feedOut).toImageMsg();
@@ -126,6 +163,7 @@ int main(int argc, char **argv){
     processedImage = it.advertise(pubImageTopic, 1);
     processedData = n.advertise<ros_drone_swarm_mocap::mocap_worker_data>(pubImageDataTopic, 30);
     ros::Subscriber master_time = n.subscribe("/master/time", 5, updateMasterTimeCB); 
+    ros::Subscriber master_commands = n.subscribe("/master/commands", 5, getCommandsFromMasterCB);
 
     // Just for debugging, create subscribers to change detection parameters through topics 
 #ifdef DEBUG

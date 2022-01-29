@@ -1,0 +1,2 @@
+bool workers_enable_messages
+bool workers_send_dummy

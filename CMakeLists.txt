@@ -70,6 +70,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   master_time.msg
+  commands_from_master.msg
   detected_ball_data.msg
   mocap_worker_data.msg
   hough_values.msg
