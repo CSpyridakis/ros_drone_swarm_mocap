@@ -14,7 +14,7 @@ static int maxS = 120;
 static int maxV = 255;
 static int di_er_kernel = 1;
 
-double gettime() {
+static double gettime() {
     struct timeval ttime;
     gettimeofday(&ttime, NULL);
     return ttime.tv_sec + ttime.tv_usec * 0.000001;
@@ -120,7 +120,7 @@ void frequency_analysis::update(cv::Mat& img, cv::Mat& imghsv, cv::Rect obj, cv:
     cv::Point ballCenter = (ballBound.br() + ballBound.tl())*0.5;
     int radius = ballBound.height > ballBound.width ? ballBound.height/2 : ballBound.width/2;
 
-    cv::imshow("Rdl", mask);
+    // cv::imshow("Rdl", mask);
 
     outObj = cv::Rect(obj.tl() + ballBound.tl(), obj.tl() + ballBound.br());
 

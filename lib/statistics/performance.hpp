@@ -9,6 +9,13 @@
 #include <time.h>
 #include <stdlib.h>
 #include <fstream>
+#include <sys/time.h>
+
+static double gettime() {
+    struct timeval ttime;
+    gettimeofday(&ttime, NULL);
+    return ttime.tv_sec + ttime.tv_usec * 0.000001;
+}
 
 #ifdef __GNUC__
 #define VARIABLE_IS_NOT_USED __attribute__ ((unused))
@@ -87,9 +94,9 @@ static std::string dimages = std::string(TEST_DIR) + "images/";                 
 const static std::string ftime = std::string(TEST_DIR) + f[_durations].name;         /* The file to be saved */
 #define D_TIME(eventMoment, function, text) { \
     std::ofstream myfile(ftime, std::ios_base::app); \
-    const std::clock_t beforeTime = clock(); \
+    double beforeTime = gettime(); \
     function; \
-    double duration = (clock() - beforeTime) / (double) CLOCKS_PER_SEC; \
+    double duration = (gettime() - beforeTime); \
     myfile << std::to_string(eventMoment) << "," << text << "," << duration << std::endl; \
     myfile.close(); \
 }
