@@ -33,8 +33,7 @@ ros_drone_swarm_mocap::mocap_worker_data procData;
 
 static bool send_dummy = false;
 void addDummyDataForRanges(ros_drone_swarm_mocap::mocap_worker_data &procData){
-    static int numOfDistances = 3;
-    static float node_distances[] = {1,2,3};
+    static int numOfDistances = 13;
     static int currentIndex = 0;
     static int repeatTimes = 0;
 
@@ -50,9 +49,9 @@ void addDummyDataForRanges(ros_drone_swarm_mocap::mocap_worker_data &procData){
 }
 
 void syncDataWithWorkersLocation(ros_drone_swarm_mocap::mocap_worker_data &procData){
-    procData.pose.x = 0;
-    procData.pose.y = 0;
-    procData.pose.z = 0;
+    procData.pose.x = -1.0;
+    procData.pose.y = 1.0;
+    procData.pose.z = 1.36;
 
     procData.pose.roll = 0;
     procData.pose.pitch = 0;
@@ -93,6 +92,7 @@ void CallbackFunction(const sensor_msgs::Image::ConstPtr& inImage){
     detectBall(feedIn, feedOut, procData);
 
     procData.master_data = masterPgk;
+    procData.header.stamp = masterPgk.header.stamp;
     syncDataWithWorkersLocation(procData);
 
     // TODO: Remove ONLY for sync testing!
@@ -104,7 +104,20 @@ void CallbackFunction(const sensor_msgs::Image::ConstPtr& inImage){
     processedData.publish(procData);
 }
 
+void sendDummy(){
+    procData.balls.clear();
+    ros_drone_swarm_mocap::detected_ball_data bd;
+    procData.balls.push_back(bd);
 
+    procData.master_data = masterPgk;
+    syncDataWithWorkersLocation(procData);
+
+    // TODO: Remove ONLY for sync testing!
+    addDummyDataForRanges(procData);
+
+    // Publish processed data to topics
+    processedData.publish(procData);
+}
 
 //  ==============================================================================================================
 //  ==============================================================================================================
@@ -173,6 +186,14 @@ int main(int argc, char **argv){
 #endif
 
     D_INIT();
+
+    // TODO: REMOVE AFTER TESTING
+    ros::Rate loop_rate(10);  // Number of messages/sec
+    while(ros::ok()){
+        sendDummy();
+        ros::spinOnce();
+        loop_rate.sleep();
+    }
 
     ros::spin();
     return 0;
