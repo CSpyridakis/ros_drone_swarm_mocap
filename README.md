@@ -1,1 +1,1 @@
-# ros-drone-swarm-mocap
+# ros_drone_swarm_mocap ![GitHub](https://img.shields.io/github/license/CSpyridakis/ros_drone_swarm_mocap) ![GitHub repo size](https://img.shields.io/github/repo-size/CSpyridakis/ros_drone_swarm_mocap) [![wakatime](https://wakatime.com/badge/user/1d822293-dbdb-48db-9b57-0fc9df520d2c/project/b00e8d7b-05e2-4060-9ea4-34a2947f818d.svg)](https://wakatime.com/badge/user/1d822293-dbdb-48db-9b57-0fc9df520d2c/project/b00e8d7b-05e2-4060-9ea4-34a2947f818d)
