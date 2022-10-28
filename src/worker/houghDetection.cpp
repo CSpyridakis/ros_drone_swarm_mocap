@@ -27,9 +27,6 @@ void updateHoughvaluesCallback(const ros_drone_swarm_mocap::hough_values::ConstP
 }
 
 void houghDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
-
-   
-
     cv::Mat imgBlur, imgCanny, imgHough, cannyTMP;
     cv::cvtColor(img, imgBlur, cv::COLOR_BGR2GRAY); 
     cv::medianBlur(imgBlur, imgBlur, median_blur);
@@ -52,7 +49,6 @@ void houghDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles){
                 0, 200);                        // Min and max radius
 
     
-
     copyImageTo(img, imgBlur, "Gray Image Blur", 10, 10, 0.3);
     copyImageTo(img, cannyTMP, "Canny org", imgCanny.cols*0.3 +  20, 10, 0.3);
     copyImageTo(img, imgCanny, "Canny edge detector", img.cols - imgCanny.cols*0.3 - 10, 10, 0.3);

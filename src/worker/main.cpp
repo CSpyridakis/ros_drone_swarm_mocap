@@ -124,8 +124,6 @@ void sendDummy(){
 //  ==============================================================================================================
 //  ==============================================================================================================
 
-
-
 int main(int argc, char **argv){
     ros::init(argc, argv, "detect_ball");
     ros::NodeHandle n;
@@ -149,41 +147,41 @@ int main(int argc, char **argv){
     }
     procData.nodeID = nodeID;
     sensor_msgs::CameraInfo::ConstPtr camera_parameters = ros::topic::waitForMessage<sensor_msgs::CameraInfo>("/usb_cam_" + std::to_string(nodeID) + "/camera_info", n);
-    procData.camera.imageHeightInPixels = camera_parameters->height;
-    procData.camera.imageWidthInPixels = camera_parameters->width;
-    procData.camera.XfocalLengthInMillimeters = camera_parameters->P[0];
-    procData.camera.YfocalLengthInMillimeters = camera_parameters->P[5];
-    procData.camera.XFieldOfViewInAngles = 2 * atan((float)procData.camera.imageWidthInPixels  / (2 * (float)procData.camera.XfocalLengthInMillimeters)) * 180.0 / CV_PI ;
-    procData.camera.YFieldOfViewInAngles = 2 * atan((float)procData.camera.imageHeightInPixels / (2 * (float)procData.camera.YfocalLengthInMillimeters)) * 180.0 / CV_PI ;
-    procData.camera.objectsRealSizeInMeter = objRealSize;
-    procData.camera.XsensorSizeInMillimeters = XsensorSizeInMillimeter;
-    procData.camera.YsensorSizeInMillimeters = YsensorSizeInMillimeter;
+    procData.camera.imageHeightInPixels                 = camera_parameters->height;
+    procData.camera.imageWidthInPixels                  = camera_parameters->width;
+    procData.camera.XfocalLengthInMillimeters           = camera_parameters->P[0];
+    procData.camera.YfocalLengthInMillimeters           = camera_parameters->P[5];
+    procData.camera.XFieldOfViewInAngles                = 2 * atan((float)procData.camera.imageWidthInPixels  / (2 * (float)procData.camera.XfocalLengthInMillimeters)) * 180.0 / CV_PI ;
+    procData.camera.YFieldOfViewInAngles                = 2 * atan((float)procData.camera.imageHeightInPixels / (2 * (float)procData.camera.YfocalLengthInMillimeters)) * 180.0 / CV_PI ;
+    procData.camera.objectsRealSizeInMeter              = objRealSize;
+    procData.camera.XsensorSizeInMillimeters            = XsensorSizeInMillimeter;
+    procData.camera.YsensorSizeInMillimeters            = YsensorSizeInMillimeter;
 
     // Sensor's init positions
-    procData.pose.x = node_x;
-    procData.pose.y = node_y;
-    procData.pose.z = node_z;
-    procData.pose.roll = node_roll;
-    procData.pose.pitch = node_pitch;
-    procData.pose.yaw = node_yaw;
+    procData.pose.x                                     = node_x;
+    procData.pose.y                                     = node_y;
+    procData.pose.z                                     = node_z;
+    procData.pose.roll                                  = node_roll;
+    procData.pose.pitch                                 = node_pitch;
+    procData.pose.yaw                                   = node_yaw;
 
     // Create topics names
-    std::string subImageTopic = "/usb_cam_" + std::to_string(nodeID) + "/image_color";
-    std::string pubImageTopic = "/usb_cam_" + std::to_string(nodeID) + "/processed_image";
-    std::string pubImageDataTopic = "/node/" + std::to_string(nodeID) + "/processed_data";
+    std::string subImageTopic                           = "/usb_cam_" + std::to_string(nodeID) + "/image_color";
+    std::string pubImageTopic                           = "/usb_cam_" + std::to_string(nodeID) + "/processed_image";
+    std::string pubImageDataTopic                       = "/node/" + std::to_string(nodeID) + "/processed_data";
 
     // Create actual subscribers and publishers 
-    image_transport::Subscriber rawImage = it.subscribe(subImageTopic, 1, CallbackFunction);
-    processedImage = it.advertise(pubImageTopic, 1);
-    processedData = n.advertise<ros_drone_swarm_mocap::mocap_worker_data>(pubImageDataTopic, 30);
-    ros::Subscriber master_time = n.subscribe("/master/time", 5, updateMasterTimeCB); 
-    ros::Subscriber master_commands = n.subscribe("/master/commands", 5, getCommandsFromMasterCB);
+    image_transport::Subscriber rawImage                = it.subscribe(subImageTopic, 1, CallbackFunction);
+    processedImage                                      = it.advertise(pubImageTopic, 1);
+    processedData                                       = n.advertise<ros_drone_swarm_mocap::mocap_worker_data>(pubImageDataTopic, 30);
+    ros::Subscriber master_time                         = n.subscribe("/master/time", 5, updateMasterTimeCB); 
+    ros::Subscriber master_commands                     = n.subscribe("/master/commands", 5, getCommandsFromMasterCB);
 
     // Just for debugging, create subscribers to change detection parameters through topics 
 #ifdef DEBUG
-    ros::Subscriber hue_sub = n.subscribe("/node/" + std::to_string(nodeID) + "/hsv_params", 5, updateHSVvaluesCallback); 
-    ros::Subscriber hough_sub = n.subscribe("/node/" + std::to_string(nodeID) + "/hough_params",5, updateHoughvaluesCallback);
-    ros::Subscriber freq_hue_sub = n.subscribe("/node/" + std::to_string(nodeID) + "/frequency/hsv_params", 5, freqUpdateHSVvaluesCallback); 
+    ros::Subscriber hue_sub                             = n.subscribe("/node/" + std::to_string(nodeID) + "/hsv_params", 5, updateHSVvaluesCallback); 
+    ros::Subscriber hough_sub                           = n.subscribe("/node/" + std::to_string(nodeID) + "/hough_params",5, updateHoughvaluesCallback);
+    ros::Subscriber freq_hue_sub                        = n.subscribe("/node/" + std::to_string(nodeID) + "/frequency/hsv_params", 5, freqUpdateHSVvaluesCallback); 
 #endif
 
     D_INIT();

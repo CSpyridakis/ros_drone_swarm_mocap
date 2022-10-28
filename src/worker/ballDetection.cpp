@@ -26,10 +26,10 @@ void detectBall(const cv::Mat img, cv::Mat& imgOut, ros_drone_swarm_mocap::mocap
     std::vector<cv::Vec3f> circles;
     std::vector<double> inCirclesLedDuration;
     
-    cv::Mat hsvImg = img.clone();
-    cv::Mat houghImg = img.clone();
+    cv::Mat hsvImg      = img.clone();
+    cv::Mat houghImg    = img.clone();
 
-    double time_now = ros::Time::now().toSec();
+    double time_now     = ros::Time::now().toSec();
 
 #if DETECTION_MODE == MODE_COLOR_DETECTION
 #ifdef DEBUG_FUNCTIONS

@@ -39,6 +39,7 @@ void fixTrackers(){
         if(gaussian_kernel_size % 2 == 0)
             cv::setTrackbarPos("gaussian", "trackbars", gaussian_kernel_size+1);
 }
+
 void setupTrackers(int gau, int iH, int xH, int nS, int xS, int nV, int xV, int dir){
     cv::setTrackbarPos( "gaussian", "trackbars", gau);
     cv::setTrackbarPos( "minH", "trackbars", iH);

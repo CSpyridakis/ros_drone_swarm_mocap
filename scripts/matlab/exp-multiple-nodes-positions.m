@@ -11,18 +11,19 @@ P_X = [-1 -1 1 1];
 P_Y = [-1 1 -1 1];
 P_Z = [1.36 1.36 1.36 1.36];
 
-r=0.5;
-teta=-pi:0.01:pi;
-x1=r*cos(teta);
-y1=r*sin(teta);
+r       = 0.5;
+teta    = -pi:0.01:pi;
+x1      = r*cos(teta);
+y1      = r*sin(teta);
 
-r2=1;
-teta=-pi:0.01:pi;
-x2=r2*cos(teta);
-y2=r2*sin(teta);
+r2      = 1;
+teta    = -pi:0.01:pi;
+x2      = r2*cos(teta);
+y2      = r2*sin(teta);
 
-dec = 40;
+dec     = 40;
 
+% Estimations
 cpp_est = [0, 0, 0 
 0.059354, 0.0173186, -0.0891379
 -0.978573, -0.0708931, -0.0689981
@@ -38,17 +39,12 @@ cpp_est = [0, 0, 0
 0.565318, 0.0651951, -0.0825759
 0.416937, -0.344639, -0.0828228];
 
-
-
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ball_radious = 0.144;
-x=1;y=2;z=3;
+x=1; y=2; z=3;
 
 % Distances from each node
 % Close to real
@@ -71,26 +67,26 @@ n = [-1.0000001 -0.9999999 1.3580001
       0.9999999 -0.9999998 1.3580001];
 
 % Test case
-te=1;
+te  = 1;
 ALL = [0 0 0];
-A = [ 1,-2*n(1,x),-2*n(1,y),-2*n(1,z)
+A   = [ 1,-2*n(1,x),-2*n(1,y),-2*n(1,z)
       1,-2*n(2,x),-2*n(2,y),-2*n(2,z)
       1,-2*n(3,x),-2*n(3,y),-2*n(3,z)
       1,-2*n(4,x),-2*n(4,y),-2*n(4,z)];
 
 for t = 1:13
-disp([num2str(n_dist(1,t)), '    ', num2str(n_dist(2,t)), '    ', num2str(n_dist(3,t)), '    ',num2str(n_dist(4,t))]);
-B = [n_dist(1,t)^2 - n(1,x)^2 - n(1,y)^2 - n(1,z)^2
-    n_dist(2,t)^2 - n(2,x)^2 - n(2,y)^2 - n(2,z)^2
-    n_dist(3,t)^2 - n(3,x)^2 - n(3,y)^2 - n(3,z)^2
-    n_dist(4,t)^2 - n(4,x)^2 - n(4,y)^2 - n(4,z)^2];
- 
-T = A\B;
-disp([num2str(t),')          ', num2str(T(1)), '           ', num2str(T(2)), '           ', num2str(T(3)), '           ', num2str(T(4))]);
-disp([num2str(t),')          O:', num2str(T(1)), '           E:',num2str(T(2)^2 + T(3)^2 + T(4)^2) ]);
-disp(' ');
-R = [T(2) T(3) T(4)];
-ALL = [ALL ; R];
+    disp([num2str(n_dist(1,t)), '    ', num2str(n_dist(2,t)), '    ', num2str(n_dist(3,t)), '    ',num2str(n_dist(4,t))]);
+    B = [n_dist(1,t)^2 - n(1,x)^2 - n(1,y)^2 - n(1,z)^2
+        n_dist(2,t)^2 - n(2,x)^2 - n(2,y)^2 - n(2,z)^2
+        n_dist(3,t)^2 - n(3,x)^2 - n(3,y)^2 - n(3,z)^2
+        n_dist(4,t)^2 - n(4,x)^2 - n(4,y)^2 - n(4,z)^2];
+    
+    T = A\B;
+    disp([num2str(t),')          ', num2str(T(1)), '           ', num2str(T(2)), '           ', num2str(T(3)), '           ', num2str(T(4))]);
+    disp([num2str(t),')          O:', num2str(T(1)), '           E:',num2str(T(2)^2 + T(3)^2 + T(4)^2) ]);
+    disp(' ');
+    R   = [T(2) T(3) T(4)];
+    ALL = [ALL ; R];
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -102,62 +98,58 @@ xlim([X(1,1) X(1,2)]);
 ylim([Y(1,1) Y(2,1)]);
 xlabel('X'); ylabel('Y'); zlabel('Z');
 hold on;
-stem3(P_X(1), P_Y(1), P_Z(1), 'MarkerSize', markSize, 'Color', 'blue','LineWidth',lineWidth, 'MarkerEdgeColor', 'red', 'Marker', 's');
+stem3(P_X(1), P_Y(1), P_Z(1), 'MarkerSize', markSize, 'Color', 'blue','LineWidth',lineWidth, 'MarkerEdgeColor', 'red', 'Marker', 's'); hold on;
+stem3(P_X(2), P_Y(2), P_Z(2), 'MarkerSize', markSize, 'Color', 'blue','LineWidth',lineWidth, 'MarkerEdgeColor', 'red', 'Marker', 's'); hold on;
+stem3(P_X(3), P_Y(3), P_Z(3), 'MarkerSize', markSize, 'Color', 'blue','LineWidth',lineWidth, 'MarkerEdgeColor', 'red', 'Marker', 's'); hold on;
+stem3(P_X(4), P_Y(4), P_Z(4), 'MarkerSize', markSize, 'Color', 'blue','LineWidth',lineWidth, 'MarkerEdgeColor', 'red', 'Marker', 's'); hold on; 
+plot3(x1, y1, zeros(1, numel(x1)),'MarkerSize',30,'Color', 'black')  hold on; 
+plot3(x2, y2, zeros(1, numel(x2)),'MarkerSize',30,'Color', 'black')  hold on; 
+stem([0 0 0 0 0], [-1 -0.5 0 0.5 1], 'MarkerSize', 30, 'Color', 'black','LineStyle', 'none' , 'LineWidth', lineWidth)
+hold on; 
+stem([-1 -0.5 0 0.5 1], [0 0 0 0 0], 'MarkerSize', 30, 'Color', 'black', 'LineStyle', 'none', 'LineWidth', lineWidth)
+hold on; 
+stem3([r*sin(dec) -r*sin(dec) r*sin(dec) -r*sin(dec)], [r*cos(dec) r*cos(dec) -r*cos(dec) -r*cos(dec)], [0 0 0 0], 'MarkerSize', 30, 'Color', 'black', 'LineStyle', 'none' , 'LineWidth', lineWidth)
 hold on;
-stem3(P_X(2), P_Y(2), P_Z(2), 'MarkerSize', markSize, 'Color', 'blue','LineWidth',lineWidth, 'MarkerEdgeColor', 'red', 'Marker', 's');
-hold on;
-stem3(P_X(3), P_Y(3), P_Z(3), 'MarkerSize', markSize, 'Color', 'blue','LineWidth',lineWidth, 'MarkerEdgeColor', 'red', 'Marker', 's');
-hold on;
-stem3(P_X(4), P_Y(4), P_Z(4), 'MarkerSize', markSize, 'Color', 'blue','LineWidth',lineWidth, 'MarkerEdgeColor', 'red', 'Marker', 's');
-hold on; 
-plot3(x1,y1,zeros(1,numel(x1)),'MarkerSize',30,'Color', 'black')
-hold on; 
-plot3(x2,y2,zeros(1,numel(x2)),'MarkerSize',30,'Color', 'black' )
-hold on; 
-stem([0 0 0 0 0],[-1 -0.5 0 0.5 1],'MarkerSize',30,'Color', 'black','LineStyle', 'none' ,'LineWidth',lineWidth )
-hold on; 
-stem([-1 -0.5 0 0.5 1],[0 0 0 0 0],'MarkerSize',30,'Color', 'black','LineStyle', 'none' ,'LineWidth',lineWidth )
-hold on; 
-stem3([r*sin(dec) -r*sin(dec) r*sin(dec) -r*sin(dec)],[r*cos(dec) r*cos(dec) -r*cos(dec) -r*cos(dec)], [0 0 0 0],'MarkerSize',30,'Color', 'black', 'LineStyle', 'none' ,'LineWidth',lineWidth)
-hold on;
-plot3([0 0], [-1.5 1.5], [0 0],'Color', 'k');
+plot3([0 0], [-1.5 1.5], [0 0], 'Color', 'k');
 for t = 2:14
     height = 0;%ALL(t,3);%ALL(t,3);
-%hold on ; stem3(ALL(t,1), ALL(t,2), height,'MarkerSize',20,'Color', 'green','LineStyle', 'none' ,'LineWidth',5);
-%text(ALL(t,1), ALL(t,2), height+0.1, int2str(t-1), 'FontSize', 20, 'Color', 'b')
+    %hold on ; stem3(ALL(t,1), ALL(t,2), height,'MarkerSize',20,'Color', 'green','LineStyle', 'none' ,'LineWidth',5);
+    %text(ALL(t,1), ALL(t,2), height+0.1, int2str(t-1), 'FontSize', 20, 'Color', 'b')
 
-hold on; stem3(cpp_est(t,1), cpp_est(t,2), cpp_est(t,3),'MarkerSize',20,'Color', 'green','LineStyle', 'none' ,'LineWidth',5);
-text(cpp_est(t,1), cpp_est(t,2), cpp_est(t,3) + 0.1, int2str(t-1), 'FontSize', 20, 'Color', 'b')
+    hold on; stem3(cpp_est(t,1), cpp_est(t,2), cpp_est(t,3),'MarkerSize',20,'Color', 'green','LineStyle', 'none' ,'LineWidth',5);
+    text(cpp_est(t,1), cpp_est(t,2), cpp_est(t,3) + 0.1, int2str(t-1), 'FontSize', 20, 'Color', 'b')
 end
+
 colors_t = ['b' 'r' 'g' 'c'];
+
 for t = 1:0
- location = 10;
- Rg = n_dist(t,location);
- [SX SY SZ] = sphere(100); 
- SX = SX * Rg + n(t,x); 
- SY = SY * Rg + n(t,y); 
- SZ = SZ * Rg + n(t,z); 
- mesh(SX,SY,SZ,'Facecolor','none','EdgeColor',colors_t(mod(t,4)+1)); hold on
+    location   = 10;
+    Rg         = n_dist(t,location);
+    [SX SY SZ] = sphere(100); 
+    SX         = SX * Rg + n(t,x); 
+    SY         = SY * Rg + n(t,y); 
+    SZ         = SZ * Rg + n(t,z); 
+    mesh(SX,SY,SZ,'Facecolor','none','EdgeColor',colors_t(mod(t,4)+1)); hold on
 end
 
-text(0, 0, 0.1, '1', 'FontSize', 20, 'Color', 'r')
-text(-1, 0, 0.1, '2', 'FontSize', 20, 'Color', 'r')
-text(0, 1, 0.1, '3', 'FontSize', 20, 'Color', 'r')
-text(1, 0, 0.1, '4', 'FontSize', 20, 'Color', 'r')
-text(0, -1, 0.1, '5', 'FontSize', 20, 'Color', 'r')
-text(0, -0.5, 0.1, '6', 'FontSize', 20, 'Color', 'r')
-text(-r*sin(dec), r*cos(dec), 0.1, '7', 'FontSize', 20, 'Color', 'r')
-text(-0.5, 0, 0.1, '8', 'FontSize', 20, 'Color', 'r')
-text(-r*sin(dec), -r*cos(dec), 0.1, '9', 'FontSize', 20, 'Color', 'r')
-text(0, 0.5, 0.1, '10', 'FontSize', 20, 'Color', 'r')
-text(r*sin(dec),  -r*cos(dec), 0.1, '11', 'FontSize', 20, 'Color', 'r')
-text(0.5, 0, 0.1, '12', 'FontSize', 20, 'Color', 'r')
-text(r*sin(dec), r*cos(dec), 0.1, '13', 'FontSize', 20, 'Color', 'r')
+text(          0,           0,    0.1,      '1',    'FontSize',    20,    'Color',    'r')
+text(          -1,          0,    0.1,      '2',    'FontSize',    20,    'Color',    'r')
+text(          0,           1,    0.1,      '3',    'FontSize',    20,    'Color',    'r')
+text(          1,           0,    0.1,      '4',    'FontSize',    20,    'Color',    'r')
+text(          0,          -1,    0.1,      '5',    'FontSize',    20,    'Color',    'r')
+text(          0,        -0.5,    0.1,      '6',    'FontSize',    20,    'Color',    'r')
+text(-r*sin(dec),  r*cos(dec),    0.1,      '7',    'FontSize',    20,    'Color',    'r')
+text(       -0.5,           0,    0.1,      '8',    'FontSize',    20,    'Color',    'r')
+text(-r*sin(dec), -r*cos(dec),    0.1,      '9',    'FontSize',    20,    'Color',    'r')
+text(          0,         0.5,    0.1,     '10',    'FontSize',    20,    'Color',    'r')
+text(r*sin(dec),  -r*cos(dec),    0.1,     '11',    'FontSize',    20,    'Color',    'r')
+text(       0.5,            0,    0.1,     '12',    'FontSize',    20,    'Color',    'r')
+text(r*sin(dec),   r*cos(dec),    0.1,     '13',    'FontSize',    20,    'Color',    'r')
 
-text(-1, -1, 0.1, 'Node 1', 'FontSize', 12, 'Color', 'r')
-text(-1, 1, 0.1, 'Node 2', 'FontSize', 12, 'Color', 'r')
-text(1, 1, 0.1, 'Node 3', 'FontSize', 12, 'Color', 'r')
-text(1, -1, 0.1, 'Node 4', 'FontSize', 12, 'Color', 'r')
+text(        -1,           -1,    0.1, 'Node 1',     'FontSize',   12,    'Color',    'r')
+text(        -1,            1,    0.1, 'Node 2',     'FontSize',   12,    'Color',    'r')
+text(         1,            1,    0.1, 'Node 3',     'FontSize',   12,    'Color',    'r')
+text(         1,           -1,    0.1, 'Node 4',     'FontSize',   12,    'Color',    'r')
 
 
 

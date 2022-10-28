@@ -2,8 +2,7 @@
 #include "distance-angle.hpp"
 
 float calculateAngle(int fov, int pixelLenght, int NthPixel, bool yaxis = false){
-
-    float angle = (float)( (std::abs( (float)pixelLenght/2 - NthPixel) * fov ) / pixelLenght);
+    float angle = (float)( (std::abs( (float)pixelLenght/2 - NthPixel ) * fov ) / pixelLenght);
 
     // Calculate sign (for y axis ymiddle < 0 -> positive angles)
     if (yaxis) return (float)(NthPixel >= pixelLenght/2 ) ? -angle : angle  ;       

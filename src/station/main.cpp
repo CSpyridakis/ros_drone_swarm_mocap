@@ -43,7 +43,7 @@ void localizeObjectCB(const ros_drone_swarm_mocap::mocap_worker_data::ConstPtr& 
     std::vector<anchor_data> anchors;
     Point objectsPose;
     
-    for(int i=0;i<4;i++){
+    for(int i = 0 ; i<4 ; i++){
         anchor_data anc;
 
         anc.pose = {{pd[i].pose.x, pd[i].pose.y, pd[i].pose.z},{pd[i].pose.roll, pd[i].pose.pitch, pd[i].pose.yaw}};
@@ -61,6 +61,8 @@ void localizeObjectCB(const ros_drone_swarm_mocap::mocap_worker_data::ConstPtr& 
     ROS_INFO("B (%f, %f, %f)\n", objectsPose.pos.x, objectsPose.pos.y, objectsPose.pos.z);
 }
 
+/*    MAIN    */
+
 int packet_id = 0;
 int main(int argc, char **argv){
     ros::init(argc, argv, "ball_localization");
@@ -73,7 +75,7 @@ int main(int argc, char **argv){
     message_filters::Subscriber<ros_drone_swarm_mocap::mocap_worker_data> worker_3(n, "/node/3/processed_data", 1);
     message_filters::Subscriber<ros_drone_swarm_mocap::mocap_worker_data> worker_4(n, "/node/4/processed_data", 1);
 
-  typedef message_filters::sync_policies::ApproximateTime<ros_drone_swarm_mocap::mocap_worker_data,
+  typedef message_filters::sync_policies::ApproximateTime<  ros_drone_swarm_mocap::mocap_worker_data,
                                                             ros_drone_swarm_mocap::mocap_worker_data,
                                                             ros_drone_swarm_mocap::mocap_worker_data,
                                                             ros_drone_swarm_mocap::mocap_worker_data> sync_pol; 
@@ -87,10 +89,10 @@ int main(int argc, char **argv){
     ros::Rate loop_rate(2);  // Number of messages/sec
 
     while(ros::ok()){
-        msg.packet_id = packet_id ++;
-        msg.internal_time = clock();
-        msg.ros_time = ros::Time::now();
-        msg.header.stamp = ros::Time::now();
+        msg.packet_id       = packet_id++;
+        msg.internal_time   = clock();
+        msg.ros_time        = ros::Time::now();
+        msg.header.stamp    = ros::Time::now();
         
         chatter_pub.publish(msg);
         ros::spinOnce();

@@ -30,15 +30,15 @@ A = [ 1,-2*n(1,x),-2*n(1,y),-2*n(1,z)
       1,-2*n(4,x),-2*n(4,y),-2*n(4,z)];
 
 for t = 1:13
-B = [n_dist(1,t)^2 - n(1,x)^2 - n(1,y)^2 - n(1,z)^2
-    n_dist(2,t)^2 - n(2,x)^2 - n(2,y)^2 - n(2,z)^2
-    n_dist(3,t)^2 - n(3,x)^2 - n(3,y)^2 - n(3,z)^2
-    n_dist(4,t)^2 - n(4,x)^2 - n(4,y)^2 - n(4,z)^2];
- 
-T = A\B;
-disp([num2str(t),')          ', num2str(T(1)), '           ', num2str(T(2)), '           ', num2str(T(3)), '           ', num2str(T(4))]);
-disp([num2str(t),')          O:', num2str(T(1)), '           E:',num2str(T(2)^2 + T(3)^2 + T(4)^2) ]);
-disp(' ');
-R = [T(2) T(3) T(4)];
-ALL = [ALL ; R];
+      B = [n_dist(1,t)^2 - n(1,x)^2 - n(1,y)^2 - n(1,z)^2
+      n_dist(2,t)^2 - n(2,x)^2 - n(2,y)^2 - n(2,z)^2
+      n_dist(3,t)^2 - n(3,x)^2 - n(3,y)^2 - n(3,z)^2
+      n_dist(4,t)^2 - n(4,x)^2 - n(4,y)^2 - n(4,z)^2];
+      
+      T = A\B;
+      disp([num2str(t),  ')          ', num2str(T(1)),   '           ', num2str(T(2)), '           ', num2str(T(3)), '           ', num2str(T(4))]);
+      disp([num2str(t),')          O:', num2str(T(1)), '           E:', num2str(T(2)^2 + T(3)^2 + T(4)^2)]);
+      disp(' ');
+      R     = [T(2) T(3) T(4)];
+      ALL   = [ALL ; R];
 end

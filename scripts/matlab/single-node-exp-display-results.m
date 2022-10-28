@@ -150,10 +150,10 @@ if ~DEBUG ; saveas(f4,strcat(dirpath, '/', 'network', ext)) ; end
 %% ANGLES
 
 % Init data
-Data = csvread("angles.csv");
-timeD = Data(:,1); initTime = timeD(1); % timeD = timeD - initTime;
-anglex = Data(:,2);
-angley = Data(:,3);
+Data    = csvread("angles.csv");
+timeD   = Data(:,1); initTime = timeD(1); % timeD = timeD - initTime;
+anglex  = Data(:,2);
+angley  = Data(:,3);
 
 
 f7 = figure();
@@ -171,9 +171,9 @@ if ~DEBUG ; saveas(f5,strcat(dirpath, '/', 'angles', ext)) ; end
 %% DISTANCES
 
 % Init data
-Data = csvread("distance.csv");
-timeD = Data(:,1); initTime = timeD(1); % timeD = timeD - initTime;
-distance = Data(:,2);
+Data        = csvread("distance.csv");
+timeD       = Data(:,1); initTime = timeD(1); % timeD = timeD - initTime;
+distance    = Data(:,2);
 
 f8 = figure();
 p8 = plot(timeD, distance);

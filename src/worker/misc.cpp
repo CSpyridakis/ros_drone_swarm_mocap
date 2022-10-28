@@ -30,8 +30,8 @@ void combineImages(cv::Mat img1, cv::Mat img2, cv::Mat &outimage){
     fixMatForImageTransfer(img1);
     fixMatForImageTransfer(img2);
 
-    int rows = img1.rows + img2.rows;
-    int cols = std::max(img1.cols, img2.cols);
+    int rows    = img1.rows + img2.rows;
+    int cols    = std::max(img1.cols, img2.cols);
 
     cv::Mat res = cv::Mat(rows, cols, CV_8UC3);
 
@@ -45,11 +45,11 @@ void combineImages(cv::Mat img1, cv::Mat img2, cv::Mat &outimage){
 #define _R 2
 
 void getHistogram(const cv::Mat img, cv::Mat &histogram){
-    int histSize = 256;
-    float range[] = {0, 256};
-    const float* histRange = {range};
-    bool uniform = true;
-    bool accumulate = false;
+    int histSize            = 256;
+    float range[]           = {0, 256};
+    const float* histRange  = {range};
+    bool uniform            = true;
+    bool accumulate         = false;
 
     cv::Mat hist[3];
     std::vector<cv::Mat> channels(img.channels());
@@ -59,17 +59,19 @@ void getHistogram(const cv::Mat img, cv::Mat &histogram){
     cv::calcHist(&channels[_G], 1, 0, cv::Mat(), hist[_G], 1, &histSize, &histRange, uniform, accumulate);
     cv::calcHist(&channels[_R], 1, 0, cv::Mat(), hist[_R], 1, &histSize, &histRange, uniform, accumulate);
 
-    int hist_w = 512, hist_h = 400;
-    int bin_w = cvRound((double) hist_w/histSize );
+    int hist_w  = 512, hist_h = 400;
+    int bin_w   = cvRound((double) hist_w/histSize );
     cv::Mat histImage(hist_h, hist_w, CV_8UC3, cv::Scalar(0,0,0));
 
     for(int i = 1; i<histSize; i++){
         cv::line(histImage, cv::Point(bin_w*(i-1), hist_h - cvRound(hist[_B].at<float>(i-1)) ),
             cv::Point(bin_w*(i), hist_h - cvRound(hist[_B].at<float>(i)) ),
             cv::Scalar(255, 0, 0), 2, 8, 0);
+
         cv::line(histImage, cv::Point(bin_w*(i-1), hist_h - cvRound(hist[_G].at<float>(i-1)) ),
             cv::Point(bin_w*(i), hist_h - cvRound(hist[_G].at<float>(i)) ),
             cv::Scalar(0, 255, 0), 2, 8, 0);
+
         cv::line (histImage, cv::Point(bin_w*(i-1), hist_h - cvRound(hist[_R].at<float>(i-1)) ),
             cv::Point(bin_w*(i), hist_h - cvRound(hist[_R].at<float>(i))),
             cv::Scalar(0, 0, 255), 2, 8, 0);

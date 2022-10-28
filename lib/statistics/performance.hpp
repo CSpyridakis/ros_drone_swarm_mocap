@@ -1,3 +1,7 @@
+/**
+ * @brief   Use this header file ONLY to test MPU performance, then REMOVE IT!
+ *          This file has not been optimized!!!
+ */
 #ifndef PERFORMANCE_HPP
 #define PERFORMANCE_HPP
 
@@ -58,7 +62,7 @@ typedef struct file_info{
 #define _angle 6
 #define _net 7
 
-// TODO: you may need to change these filesnames
+// TODO: you may need to change these files names
 const static file_info f[] = {
     {"durations.csv", "time,function,duration"},
     {"cpu.csv", "time,usage"},

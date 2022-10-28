@@ -88,13 +88,13 @@ long double networkRead(std::string interface, std::string rt_x){
 }
 
 void get_net_stat(net_usage &stats){
-    double netnowUp = networkRead(NET_INTERFACE, "tx"); 
-    double netnowDown = networkRead(NET_INTERFACE, "rx");  
-    stats.up = netnowUp - prevNet.up;
-    stats.down = netnowDown -  prevNet.down;
-    prevNet.up = netnowUp;
-    prevNet.down = netnowDown;
-    prevNet.last_read = clock();
+    double netnowUp     = networkRead(NET_INTERFACE, "tx"); 
+    double netnowDown   = networkRead(NET_INTERFACE, "rx");  
+    stats.up            = netnowUp - prevNet.up;
+    stats.down          = netnowDown -  prevNet.down;
+    prevNet.up          = netnowUp;
+    prevNet.down        = netnowDown;
+    prevNet.last_read   = clock();
 }
 
 net_usage get_net_usage(){
@@ -103,10 +103,10 @@ net_usage get_net_usage(){
     if(timeFromLast >= 1.0){
         net_usage nowNet;
         get_net_stat(nowNet);
-        nu.up = nowNet.up;
+        nu.up   = nowNet.up;
         nu.down = nowNet.down;
     } else {
-        nu.up = prevNet.up;
+        nu.up   = prevNet.up;
         nu.down = prevNet.down;
     }
     return nu;

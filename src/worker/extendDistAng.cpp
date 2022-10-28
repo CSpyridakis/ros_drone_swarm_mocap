@@ -40,12 +40,12 @@ float calculateDistanceWithDataStruct(  int objectSizeInPixels,
 void saveDistancesToProcData(std::vector<cv::Vec3f> circles, ros_drone_swarm_mocap::mocap_worker_data& procData, const std::vector<double> inCircleLedDur){
     ros_drone_swarm_mocap::detected_ball_data bd;
     for( uint k = 0; k < circles.size(); k++ ){
-        bd.image_plane_x = circles[k][0];
-        bd.image_plane_y = circles[k][1];
-        bd.image_plane_r = circles[k][2];
+        bd.image_plane_x        = circles[k][0];
+        bd.image_plane_y        = circles[k][1];
+        bd.image_plane_r        = circles[k][2];
         bd.distance_from_camera = calculateDistanceWithDataStruct(2*bd.image_plane_r, procData);
-        bd.xangle = calcucateAngleX(procData.camera.XFieldOfViewInAngles, procData.camera.imageWidthInPixels, bd.image_plane_x);
-        bd.yangle = calcucateAngleY(procData.camera.YFieldOfViewInAngles, procData.camera.imageHeightInPixels, bd.image_plane_y);
+        bd.xangle               = calcucateAngleX(procData.camera.XFieldOfViewInAngles, procData.camera.imageWidthInPixels, bd.image_plane_x);
+        bd.yangle               = calcucateAngleY(procData.camera.YFieldOfViewInAngles, procData.camera.imageHeightInPixels, bd.image_plane_y);
         // ROS_INFO("Circle - %d Center: (%d, %d) | Distance: %f | Angle x: %f | Angle y: %f", k,  
                     //  bd.image_plane_x, bd.image_plane_y,  bd.distance_from_camera,  bd.xangle, bd.yangle);
         // ROS_INFO("Sensorsize: %f\n", calculateSensorSize(2*bd.image_plane_r, 1.0, procData));
@@ -54,19 +54,17 @@ void saveDistancesToProcData(std::vector<cv::Vec3f> circles, ros_drone_swarm_moc
         DEBUG_DA(ros::Time::now().toSec(), k, bd.distance_from_camera, bd.xangle, bd.yangle);
 #endif
 #endif
-        if(!inCircleLedDur.empty()){
+        if(!inCircleLedDur.empty())
             bd.id = get_id(inCircleLedDur[k]);
-        }
-        else{
+        else
             bd.id = 0;
-        } 
     }
     procData.balls.push_back(bd);
 }
 
 void fixCenterRadius(std::vector<cv::Vec3f> &circles){
     static std::vector<cv::Vec3f> circles_buf;
-    // Due to noise, for long ranges (short radius circles) increase diameter size
+    // FIXME Due to noise, for long ranges (short radius circles) increase diameter size
     // to improve range estimation  
     // for(int i=0; i<circles.size();i++){
     //     if (2*circles[i][2] < 100){
