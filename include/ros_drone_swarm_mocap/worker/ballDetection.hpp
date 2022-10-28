@@ -19,8 +19,8 @@
  * 
  * @param[in] img is the input Mat in which you want to detect the ball
  * @param[in] imgOut is the processed result in case you want to display it for debug purposes 
- * @param[in] procData has important variables for distance estimation and will contain afterwards,
- *              for each ball detected, the processed data
+ * @param[in] procData has important variables for distance estimation and will contain afterwards - 
+ *              for each ball detected - the processed data
  */
 void detectBall(const cv::Mat img, cv::Mat &imgOut, ros_drone_swarm_mocap::mocap_worker_data &procData);
 

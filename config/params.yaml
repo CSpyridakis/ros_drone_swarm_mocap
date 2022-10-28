@@ -1,4 +1,4 @@
- # TODO: change this id value for each drone, need to change also id in worker.launch
+ # TODO: Change this id value for each drone, need to change also id in worker.launch file
 nodeID: 1                      
 nodeType: "mocap client"
 ballRealSizeInMeter: 0.144      

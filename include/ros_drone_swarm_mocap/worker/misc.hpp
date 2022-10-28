@@ -13,25 +13,41 @@
 #endif
 
 /**
- * \brief ROS image transfer needs CV_8UC3 to display image in web server, so fix Mat in other case
+ * @brief ROS image transfer needs CV_8UC3 to display image in web server, so fix Mat in other case
  * 
- * \param img
+ * @param img
  */
 void fixMatForImageTransfer(cv::Mat &img);
 
 /**
- * \brief
+ * @brief
  * 
- * \param img1
- * \param img2
- * \param outimage
+ * @param img1
+ * @param img2
+ * @param outimage
  */
 void combineImages(cv::Mat img1, cv::Mat img2, cv::Mat &outimage);
 
 
+/**
+ * @brief
+ * 
+ * @param img
+ * @param toCopyImg
+ * @param text
+ * @param left_offset
+ * @param bottom_offset
+ * @param scale
+ */
 void copyImageTo(cv::Mat &img, const cv::Mat toCopyImg, const std::string text, const int left_offset, const int bottom_offset, const float scale);
 
 
+/**
+ * @brief
+ * 
+ * @param img
+ * @param histogram
+ */
 void getHistogram(const cv::Mat img, cv::Mat &histogram);
 
 #endif //MISC_HPP

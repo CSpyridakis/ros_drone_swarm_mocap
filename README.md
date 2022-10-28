@@ -17,7 +17,7 @@ The requirement for object localization has existed for thousands of years, and 
 
 
 # Documents
-* Init version of the technical specification document is available [here](doc/drone-mocap-technical-specs.pdf).
+* Initial version of the technical specification document is available [here](doc/drone-mocap-technical-specs.pdf).
 * High level documentation for the over all system (actually thesis document) is available through this [link](https://doi.org/10.26233/heallink.tuc.91531) as well as [here](doc/Design%20and%20Implementation%20of%20a%20Low%20Cost%20Embedded%20System%20for%20Localization%20of%20Drones%20Flying%20in%20Swarms.pdf).
 
 

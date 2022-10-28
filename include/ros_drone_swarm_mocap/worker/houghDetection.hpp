@@ -6,18 +6,18 @@
 #include "ros_drone_swarm_mocap/hough_values.h"
 
 /**
- * \brief
+ * @brief
  * 
- * \param msg
+ * @param[in] msg
  */
 void updateHoughvaluesCallback(const ros_drone_swarm_mocap::hough_values::ConstPtr& msg);
 
 
 /**
- * \brief
+ * @brief
  * 
- * \param img
- * \param circles
+ * @param[in] img
+ * @param[in] circles
  */
 void houghDetection(cv::Mat &img, std::vector<cv::Vec3f> &circles);
 

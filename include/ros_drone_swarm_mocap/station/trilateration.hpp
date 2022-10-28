@@ -29,7 +29,7 @@ typedef enum trilateration_return_value{
 /**
  * @brief Provide anchors data and by the help of the trilateration algorithm estimate free node position
  * 
- * @param[in] anchors  Anchors data see @ref anchor_data to learn more
+ * @param[in] anchors  Anchors data see @ref anchor_data for more info
  * @param[out] objectsPose  the estimated position of the object
  *
  * @see find here https://doi.org/10.26233/heallink.tuc.91531 how exactly this function works
